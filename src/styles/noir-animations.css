@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap');
+
+.noir-display { font-family: 'Anton', 'Bebas Neue', Impact, 'Arial Narrow', sans-serif; }
+.noir-hero-display { font-family: 'Bebas Neue', 'Oswald', Impact, 'Arial Narrow', sans-serif; }
+.noir-body { font-family: 'Inter', system-ui, sans-serif; }
+
+:root {
+    --noir-red: #F21D27;
+    --noir-black: #0C0C0F;
+    --noir-charcoal: #242124;
+    --noir-ivory: #F4F0EC;
+    --noir-gray: #A9A1A5;
+    --noir-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes noir-mask-up { from { transform: translateY(110%); } to { transform: translateY(0); } }
+@keyframes noir-track { from { letter-spacing: 0.15em; opacity: 0; } to { letter-spacing: 0.6em; opacity: 1; } }
+@keyframes noir-line { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes noir-curtain { from { transform: translateY(0); } to { transform: translateY(-100%); } }
+@keyframes noir-fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes noir-rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes noir-menu-in { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes noir-scroll { 0% { transform: translateY(-100%); } 100% { transform: translateY(100%); } }
+
+/* Intro: ~2.0s total (curtain starts at 1300ms, lasts 700ms) */
+.noir-intro { animation: noir-curtain 700ms var(--noir-ease) 1300ms forwards; }
+.noir-intro-mask { overflow: hidden; }
+.noir-intro-noir { animation: noir-mask-up 900ms var(--noir-ease) 120ms both; }
+.noir-intro-bistro { animation: noir-track 950ms var(--noir-ease) 400ms both; }
+.noir-intro-line { transform-origin: left; animation: noir-line 750ms var(--noir-ease) 600ms both; }
+
+.noir-rise { animation: noir-rise 700ms var(--noir-ease) both; animation-delay: var(--d, 0ms); }
+.noir-menu-overlay { animation: noir-menu-in 380ms var(--noir-ease) both; }
+.noir-menu-link { animation: noir-rise 450ms var(--noir-ease) both; animation-delay: calc(140ms + var(--i, 0) * 65ms); }
+.noir-scroll-line { animation: noir-scroll 1.8s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+    .noir-intro { animation: noir-fade-out 200ms linear 300ms forwards; }
+    .noir-intro-noir, .noir-intro-bistro, .noir-intro-line,
+    .noir-rise, .noir-menu-overlay, .noir-menu-link, .noir-scroll-line {
+        animation: none !important;
+        opacity: 1;
+        transform: none;
+        clip-path: none;
+    }
+    .noir-intro-bistro { letter-spacing: 0.6em; }
+}
