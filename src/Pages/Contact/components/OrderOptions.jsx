@@ -3,8 +3,8 @@
 import { useEffect, useRef, useCallback } from "react";
 import { gsap } from "gsap";
 
-const WHATSAPP_LINK = "https://wa.me/919793104431";
-const CALL_LINK = "tel:+919793104431";
+const WHATSAPP_LINK = "https://wa.me/918793104431";
+const CALL_LINK = "tel:+918793104431";
 
 /* ── Inline SVG Icons ────────────────────────── */
 
