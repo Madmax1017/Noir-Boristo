@@ -130,11 +130,11 @@ export default function Navbar() {
 
     return (
         <>
-            {/* Main Navbar */}
-            <header className="absolute inset-x-0 top-0 z-40 bg-noir-red">
+            {/* Sleek Black Strip Bar Header */}
+            <header className="fixed inset-x-0 top-0 z-40 bg-noir-black/95 backdrop-blur-md shadow-lg text-noir-red">
                 <nav
                     aria-label="Main navigation"
-                    className="mx-auto flex w-full items-center justify-between px-5 py-5 sm:px-8 sm:py-6 lg:px-[5vw] lg:py-8"
+                    className="mx-auto flex w-full items-center justify-between px-5 py-3 sm:px-8 sm:py-3.5 lg:px-[5vw] lg:py-4 max-w-7xl"
                 >
                     {/* Logo at Left */}
                     <a
@@ -145,12 +145,12 @@ export default function Navbar() {
                         <img
                             src="/images/Noir-Bistro-logo.png"
                             alt="Noir Bistro"
-                            className="h-16 w-auto object-contain sm:h-20 lg:h-24"
+                            className="h-10 w-auto object-contain sm:h-12 lg:h-14"
                         />
                     </a>
 
-                    {/* Desktop Horizontal Navigation Links with Bubble Hover Effect */}
-                    <div className="hidden lg:flex items-center gap-2">
+                    {/* Desktop Horizontal Navigation Links */}
+                    <div className="hidden lg:flex items-center gap-1.5">
                         {navigationLinks.map((link) => (
                             <a
                                 key={link.number}
@@ -159,7 +159,7 @@ export default function Navbar() {
                                     event.preventDefault();
                                     handleNavigation(link.href);
                                 }}
-                                className="relative rounded-full px-5 py-2.5 text-xs font-bold tracking-[0.2em] text-noir-black transition-all duration-300 hover:bg-noir-black hover:text-noir-red focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-noir-black"
+                                className="relative rounded-full px-4 py-2 text-xs font-bold tracking-[0.18em] text-noir-red transition-all duration-300 hover:bg-noir-red hover:text-noir-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-noir-red"
                             >
                                 {link.label}
                             </a>
@@ -174,7 +174,7 @@ export default function Navbar() {
                         aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
                         aria-expanded={isOpen}
                         aria-controls="noir-fullscreen-menu"
-                        className="group relative z-10 flex lg:hidden min-h-12 items-center gap-3 rounded-sm px-2 text-noir-black transition-opacity duration-300 hover:opacity-65 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-noir-black"
+                        className="group relative z-10 flex lg:hidden min-h-10 items-center gap-2 rounded-sm px-2 text-noir-red transition-opacity duration-300 hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-noir-red"
                     >
                         <span className="hidden text-xs font-bold tracking-[0.22em] sm:inline">
                             {isOpen ? "CLOSE" : "MENU"}
@@ -193,13 +193,13 @@ export default function Navbar() {
                 aria-label="Noir Bistro navigation"
                 aria-hidden={!isOpen}
                 inert={!isOpen}
-                className={`fixed inset-0 z-50 flex lg:hidden flex-col overflow-y-auto bg-noir-red text-noir-black transition-[clip-path,visibility] duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${isOpen
+                className={`fixed inset-0 z-50 flex lg:hidden flex-col overflow-y-auto bg-noir-black text-noir-red transition-[clip-path,visibility] duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${isOpen
                         ? "visible [clip-path:inset(0%_0%_0%_0%)]"
                         : "invisible [clip-path:inset(0%_0%_100%_0%)]"
                     }`}
             >
                 {/* Overlay Header */}
-                <div className="flex shrink-0 items-center justify-between px-5 py-5 sm:px-8 sm:py-6">
+                <div className="flex shrink-0 items-center justify-between px-5 py-4 sm:px-8">
                     <a
                         href="#home"
                         onClick={(event) => {
@@ -212,7 +212,7 @@ export default function Navbar() {
                         <img
                             src="/images/Noir-Bistro-logo.png"
                             alt="Noir Bistro"
-                            className="h-16 w-auto object-contain sm:h-20"
+                            className="h-10 w-auto object-contain sm:h-12"
                         />
                     </a>
 
@@ -223,11 +223,11 @@ export default function Navbar() {
                         onClick={closeMenu}
                         aria-label="Close navigation menu"
                         tabIndex={isOpen ? 0 : -1}
-                        className="flex min-h-12 min-w-12 items-center justify-center transition-transform duration-300 hover:rotate-90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-noir-black"
+                        className="flex min-h-10 min-w-10 items-center justify-center transition-transform duration-300 hover:rotate-90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-noir-red"
                     >
                         <svg
-                            width="26"
-                            height="26"
+                            width="24"
+                            height="24"
                             viewBox="0 0 24 24"
                             fill="none"
                             aria-hidden="true"
@@ -244,7 +244,7 @@ export default function Navbar() {
 
                 {/* Navigation Links */}
                 <div className="mx-auto flex w-full flex-1 flex-col justify-center px-5 py-8 sm:px-8">
-                    <p className="mb-6 text-[10px] font-bold tracking-[0.32em] sm:mb-8 sm:text-xs">
+                    <p className="mb-6 text-[10px] font-bold tracking-[0.32em] opacity-70 sm:mb-8 sm:text-xs">
                         EXPLORE NOIR
                     </p>
 
@@ -266,12 +266,12 @@ export default function Navbar() {
                                         ? `${index * 75}ms`
                                         : "0ms",
                                 }}
-                                className={`group flex items-center gap-3 border-b border-noir-black/20 py-3 transition-[opacity,transform] duration-500 ease-out sm:gap-5 sm:py-4 ${isOpen
+                                className={`group flex items-center gap-3 border-b border-noir-red/20 py-3 transition-[opacity,transform] duration-500 ease-out sm:gap-5 sm:py-4 ${isOpen
                                         ? "translate-y-0 opacity-100"
                                         : "translate-y-8 opacity-0"
                                     }`}
                             >
-                                <span className="w-6 shrink-0 pt-1 text-[10px] font-bold sm:w-8 sm:text-xs">
+                                <span className="w-6 shrink-0 pt-1 text-[10px] font-bold opacity-70 sm:w-8 sm:text-xs">
                                     {link.number}
                                 </span>
 
@@ -291,7 +291,7 @@ export default function Navbar() {
                 </div>
 
                 {/* Overlay Footer */}
-                <div className="flex shrink-0 flex-col gap-4 border-t border-noir-black/20 px-5 py-5 sm:flex-row sm:items-end sm:justify-between sm:px-8">
+                <div className="flex shrink-0 flex-col gap-4 border-t border-noir-red/20 px-5 py-5 sm:flex-row sm:items-end sm:justify-between sm:px-8">
                     <div className="space-y-2">
                         <p className="text-[10px] font-bold tracking-[0.2em] sm:text-xs">
                             CHINESE · CONTINENTAL · CAFE

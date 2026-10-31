@@ -7,6 +7,7 @@ import AmbienceSection from "../Ambience/AmbienceSection";
 import AboutSection from "../About/AboutSection";
 import ContactSection from "../Contact/ContactSection";
 import OfferSection from "../OfferSection/OfferSection";
+import LocationSection from "../Locations/LocationSection";
 
 export default function Home() {
     return (
@@ -21,6 +22,7 @@ export default function Home() {
             <MessageSection />
             <AboutSection />
             <AmbienceSection />
+            <LocationSection />
             <ContactSection />
         </main>
     );
