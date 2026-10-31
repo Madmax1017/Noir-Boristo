@@ -1,0 +1,153 @@
+/* NOIR BISTRO — ABOUT SECTION
+   Split-screen layout: red text panel + full-bleed image
+   Only: #EA0001 (red) · #0A0A0A (black) */
+
+.about-section {
+  background: #EA0001;
+  color: #0A0A0A;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Split container ──────────────────────────── */
+.about-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 80vh;
+}
+
+/* ── Left: text panel ─────────────────────────── */
+.about-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 48px;
+  background: #EA0001;
+}
+
+.about-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: #0A0A0A;
+  opacity: 0.5;
+  margin-bottom: 20px;
+}
+
+.about-title {
+  font-family: "Anton", sans-serif;
+  font-size: clamp(3rem, 5.5vw, 5.5rem);
+  text-transform: uppercase;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: #0A0A0A;
+}
+
+.about-desc {
+  margin-top: 28px;
+  max-width: 380px;
+  font-size: 14px;
+  line-height: 1.85;
+  color: #0A0A0A;
+  opacity: 0.6;
+}
+
+/* ── CTA pill button ──────────────────────────── */
+.about-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 36px;
+  padding: 14px 32px;
+  border: 2px solid #0A0A0A;
+  border-radius: 999px;
+  background: transparent;
+  color: #0A0A0A;
+  font-family: "Anton", sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.about-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #0A0A0A;
+  border-radius: 999px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 0;
+}
+
+.about-cta:hover::before {
+  transform: scaleX(1);
+}
+
+.about-cta:hover {
+  color: #EA0001;
+}
+
+.about-cta>* {
+  position: relative;
+  z-index: 1;
+}
+
+.about-cta .cta-arrow {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.about-cta:hover .cta-arrow {
+  transform: translate(2px, -2px);
+}
+
+/* ── Right: image panel ───────────────────────── */
+.about-image-panel {
+  position: relative;
+  overflow: hidden;
+  background: #0A0A0A;
+}
+
+.about-image-panel img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  will-change: transform;
+}
+
+/* ── Responsive ───────────────────────────────── */
+@media (max-width: 768px) {
+  .about-split {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .about-panel {
+    padding: 64px 28px;
+  }
+
+  .about-image-panel {
+    min-height: 50vh;
+  }
+}
+
+/* ── Reduced motion ───────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+
+  .about-cta,
+  .about-cta::before,
+  .about-cta .cta-arrow,
+  .about-image-panel img {
+    transition: none !important;
+    animation: none !important;
+  }
+}

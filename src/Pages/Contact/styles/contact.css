@@ -1,0 +1,333 @@
+/* ═══════════════════════════════════════════════════
+   NOIR BISTRO — CONTACT / ORDER SECTION  v2
+   Two colors only: #EA0001 (red) · #0A0A0A (black)
+   ═══════════════════════════════════════════════════ */
+
+/* ── Section ──────────────────────────────────── */
+.contact-section {
+  background: #EA0001;
+  color: #0A0A0A;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Giant decorative background number ───────── */
+.contact-bg-number {
+  position: absolute;
+  right: -3%;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: "Anton", sans-serif;
+  font-size: clamp(20rem, 45vw, 50rem);
+  line-height: 0.8;
+  color: #0A0A0A;
+  opacity: 0.04;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ── Section number badge ─────────────────────── */
+.contact-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid #0A0A0A;
+  font-family: "Anton", sans-serif;
+  font-size: 16px;
+  color: #0A0A0A;
+  flex-shrink: 0;
+}
+
+/* ── Kicker ───────────────────────────────────── */
+.contact-kicker {
+  font-size: 11px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: #0A0A0A;
+  opacity: 0.55;
+}
+
+/* ── Headline ─────────────────────────────────── */
+.contact-headline {
+  font-family: "Anton", sans-serif;
+  text-transform: uppercase;
+  color: #0A0A0A;
+  line-height: 1;
+  letter-spacing: -0.015em;
+}
+
+.contact-headline-line {
+  display: block;
+  overflow: hidden;
+}
+
+.contact-headline-inner {
+  display: block;
+  will-change: transform;
+}
+
+/* ── Supporting copy ──────────────────────────── */
+.contact-copy {
+  font-size: 14px;
+  line-height: 1.9;
+  color: #0A0A0A;
+  opacity: 0.55;
+  max-width: 340px;
+}
+
+/* ── Horizontal rule ──────────────────────────── */
+.contact-rule {
+  height: 1px;
+  background: #0A0A0A;
+  opacity: 0.15;
+  transform-origin: left center;
+}
+
+
+
+/* ── ORDER NOW CTA ────────────────────────────── */
+.order-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  background: #0A0A0A;
+  color: #EA0001;
+  font-family: "Anton", sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.12em;
+  padding: 20px 36px;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.order-trigger::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #EA0001;
+  transform: translateY(100%);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 0;
+}
+
+.order-trigger:hover::before {
+  transform: translateY(0);
+}
+
+.order-trigger:hover {
+  color: #0A0A0A;
+}
+
+.order-trigger>* {
+  position: relative;
+  z-index: 1;
+}
+
+.order-trigger .cta-arrow {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.order-trigger:hover .cta-arrow {
+  transform: translate(3px, -3px);
+}
+
+/* ── Footer tagline ───────────────────────────── */
+.contact-tagline {
+  font-family: "Anton", sans-serif;
+  text-transform: uppercase;
+  color: #0A0A0A;
+}
+
+/* ═══════════════════════════════════════════════════
+   MODAL / POPUP
+   ═══════════════════════════════════════════════════ */
+
+.order-overlay {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.order-modal {
+  max-height: 94vh;
+  overflow-y: auto;
+  transform-origin: center center;
+}
+
+/* ── Red header strip ─────────────────────────── */
+.order-modal__header {
+  background: #EA0001;
+  color: #0A0A0A;
+  padding: 28px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+.order-modal__brand {
+  font-family: "Anton", sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+}
+
+.order-modal__close {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0A0A0A;
+  color: #EA0001;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.order-modal__close:hover {
+  transform: rotate(90deg);
+  background: rgba(10, 10, 10, 0.8);
+}
+
+/* ── Black body ───────────────────────────────── */
+.order-modal__body {
+  background: #0A0A0A;
+  color: #EA0001;
+  padding: 40px 32px 36px;
+}
+
+/* ── Option cards ─────────────────────────────── */
+.order-option {
+  will-change: transform, opacity;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 28px;
+  border: 1px solid rgba(234, 0, 1, 0.2);
+  transition: border-color 0.35s ease, background 0.35s ease;
+}
+
+.order-option:hover {
+  border-color: rgba(234, 0, 1, 0.5);
+}
+
+.order-option__icon-wrap {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(234, 0, 1, 0.3);
+  color: #EA0001;
+  flex-shrink: 0;
+}
+
+.order-option__title {
+  font-family: "Anton", sans-serif;
+  font-size: 22px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #EA0001;
+}
+
+.order-option__desc {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #EA0001;
+  opacity: 0.5;
+}
+
+/* ── Action buttons inside options ────────────── */
+.order-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: "Anton", sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 14px 24px;
+  cursor: pointer;
+  transition: background 0.35s ease, color 0.35s ease, border-color 0.35s ease;
+}
+
+.order-btn--primary {
+  background: #EA0001;
+  color: #0A0A0A;
+  border: 2px solid #EA0001;
+}
+
+.order-btn--primary:hover {
+  background: transparent;
+  color: #EA0001;
+}
+
+.order-btn--secondary {
+  background: transparent;
+  color: #EA0001;
+  border: 2px solid rgba(234, 0, 1, 0.4);
+}
+
+.order-btn--secondary:hover {
+  background: #EA0001;
+  color: #0A0A0A;
+  border-color: #EA0001;
+}
+
+/* ── Body scroll lock ─────────────────────────── */
+.body-scroll-lock {
+  overflow: hidden !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   RESPONSIVENESS
+   ═══════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .contact-bg-number {
+    font-size: 18rem;
+    right: -8%;
+  }
+
+  .order-trigger {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .order-modal__header {
+    padding: 20px 20px;
+  }
+
+  .order-modal__body {
+    padding: 28px 20px 28px;
+  }
+
+  .order-option {
+    padding: 20px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   PREFERS-REDUCED-MOTION
+   ═══════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .order-trigger,
+  .order-trigger::before,
+  .order-trigger .cta-arrow,
+  .order-option,
+  .order-modal__close,
+  .order-btn {
+    transition: none !important;
+    animation: none !important;
+  }
+}

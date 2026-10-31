@@ -113,20 +113,22 @@ export default function Gallery() {
       className="mx-auto w-full max-w-[1600px] px-5 py-16 sm:px-8 md:px-12 md:py-24 lg:px-16"
     >
       {/* Editorial heading */}
-      <div className="mb-12 flex flex-col gap-6 md:mb-20 md:flex-row md:items-end md:justify-between">
-        <div>
-          <p className="ambience-copy mb-4 font-anton text-xs tracking-[0.25em] text-noir-black">
-            STEP INSIDE / NOIR BISTRO
-          </p>
+      <div className="mb-14 md:mb-24">
+        {/* Eyebrow */}
+        <p className="ambience-copy mb-6 text-[11px] tracking-[0.35em] text-noir-black/50 uppercase">
+          STEP INSIDE / NOIR BISTRO
+        </p>
 
-          <h2 className="ambience-copy font-anton text-[clamp(3.5rem,9vw,8rem)] uppercase leading-[0.82] tracking-[-0.045em] text-noir-black">
-            FEEL THE
-            <br />
-            <span className="text-noir-black">NOIR.</span>
-          </h2>
-        </div>
+        {/* Main heading — single line on desktop */}
+        <h2 className="ambience-copy font-anton text-[clamp(2.4rem,5vw,5rem)] uppercase leading-none tracking-tight text-noir-black">
+          A MOOD OF ITS OWN.
+        </h2>
 
-        <p className="ambience-copy max-w-sm text-sm leading-relaxed text-noir-black/80 sm:text-base">
+        {/* Divider */}
+        <div className="mt-8 h-px w-20 bg-noir-black/20" aria-hidden="true" />
+
+        {/* Description */}
+        <p className="ambience-copy mt-6 max-w-md text-sm leading-[1.85] text-noir-black/60 sm:text-base">
           Bold red interiors. Warm lights. Dark corners.
           A space made for good food and even better company.
         </p>
@@ -154,9 +156,8 @@ export default function Gallery() {
         {detailImages.map((item, index) => (
           <div
             key={item.id}
-            className={`md:col-span-4 ${
-              index === 1 ? "md:mt-16" : ""
-            }`}
+            className={`md:col-span-4 ${index === 1 ? "md:mt-16" : ""
+              }`}
           >
             {renderImage(item, item.id, "aspect-[4/3]")}
           </div>

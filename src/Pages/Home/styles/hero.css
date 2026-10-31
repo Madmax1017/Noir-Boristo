@@ -1,0 +1,133 @@
+/* =================================
+   NOIR BISTRO — HERO / LOGO GRID
+================================= */
+
+/* ── Section ── */
+
+.hero-grid {
+    position: relative;
+    width: 100%;
+    min-height: 100svh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+    background: #ea0001;
+}
+
+/* ── CSS Gridlines ── */
+
+.hero-grid__lines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+
+    /* thin black gridlines every 80px */
+    background-image:
+        repeating-linear-gradient(to right,
+            rgba(10, 10, 10, 0.08) 0px,
+            rgba(10, 10, 10, 0.08) 1px,
+            transparent 1px,
+            transparent 80px),
+        repeating-linear-gradient(to bottom,
+            rgba(10, 10, 10, 0.08) 0px,
+            rgba(10, 10, 10, 0.08) 1px,
+            transparent 1px,
+            transparent 80px);
+
+    background-size: 80px 80px;
+}
+
+/* ── Centred logo container ── */
+
+.hero-grid__logo-wrap {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 52vw;
+    max-width: 520px;
+    min-width: 200px;
+
+    /* start invisible — GSAP handles reveal */
+    opacity: 0;
+}
+
+.hero-grid__logo {
+    width: 100%;
+    height: auto;
+
+    object-fit: contain;
+    display: block;
+
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+/* subtle idle breathing after GSAP reveal */
+@keyframes hero-breathe {
+
+    0%,
+    100% {
+        transform: scale(1) translateY(0);
+    }
+
+    50% {
+        transform: scale(1.012) translateY(-3px);
+    }
+}
+
+.hero-grid__logo-wrap--breathing {
+    animation: hero-breathe 5s ease-in-out infinite;
+}
+
+/* ── Grid scan line overlay ── */
+
+.hero-grid__scan {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+
+    /* a soft horizontal band that GSAP will sweep top→bottom */
+    background: linear-gradient(to bottom,
+            transparent 0%,
+            rgba(10, 10, 10, 0.06) 48%,
+            rgba(10, 10, 10, 0.06) 52%,
+            transparent 100%);
+
+    background-size: 100% 30%;
+    background-repeat: no-repeat;
+    background-position: 0% -30%;
+
+    opacity: 0;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 768px) {
+    .hero-grid__logo-wrap {
+        width: 62vw;
+        max-width: 340px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-grid__logo-wrap {
+        width: 70vw;
+        max-width: 280px;
+    }
+}
+
+/* ── Reduced motion ── */
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-grid__logo-wrap--breathing {
+        animation: none;
+    }
+}

@@ -1,0 +1,187 @@
+/* =================================
+   NOIR BISTRO — WEEKLY OFFER
+================================= */
+
+.offer-section {
+    position: relative;
+    width: 100%;
+    min-height: 360px;
+    height: 420px;
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #ea0001;
+    isolation: isolate;
+}
+
+/* Background image */
+
+.offer-background {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    object-position: center 55%;
+
+    z-index: -2;
+}
+
+/* Red image overlay */
+
+.offer-overlay {
+    position: absolute;
+    inset: 0;
+
+    background: rgba(234, 0, 1, 0.78);
+
+    z-index: -1;
+}
+
+/* Content */
+
+.offer-content {
+    position: relative;
+    z-index: 1;
+
+    width: 100%;
+    max-width: 1100px;
+
+    padding: 40px 24px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+}
+
+/* Eyebrow */
+
+.offer-eyebrow {
+    margin-bottom: 12px;
+
+    font-family: "Anton", sans-serif;
+    font-size: 18px;
+    letter-spacing: 0.08em;
+
+    color: #0a0a0a;
+}
+
+/* Main heading */
+
+.offer-title {
+    margin: 0;
+
+    font-family: "Anton", sans-serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 400;
+
+    line-height: 0.95;
+    letter-spacing: 0.01em;
+
+    color: #0a0a0a;
+}
+
+/* Description */
+
+.offer-description {
+    max-width: 650px;
+
+    margin-top: 18px;
+
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+
+    line-height: 1.7;
+    letter-spacing: 0.015em;
+
+    color: #0a0a0a;
+}
+
+/* CTA */
+
+.offer-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 190px;
+
+    margin-top: 30px;
+    padding: 11px 28px;
+
+    border: 2px solid #0a0a0a;
+    border-radius: 50px;
+
+    font-family: "Anton", sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.04em;
+
+    color: #0a0a0a;
+    background: transparent;
+
+    text-decoration: none;
+
+    transition:
+        background 300ms ease,
+        color 300ms ease,
+        transform 300ms ease;
+}
+
+.offer-button:hover {
+    background: #0a0a0a;
+    color: #ea0001;
+    transform: translateY(-3px);
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+    .offer-section {
+        height: 380px;
+        min-height: 380px;
+    }
+
+    .offer-content {
+        padding: 30px 20px;
+    }
+
+    .offer-eyebrow {
+        font-size: 15px;
+    }
+
+    .offer-title {
+        font-size: clamp(2.3rem, 9vw, 4rem);
+    }
+
+    .offer-description {
+        max-width: 480px;
+        font-size: 12px;
+    }
+
+    .offer-button {
+        margin-top: 24px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .offer-section {
+        height: 350px;
+        min-height: 350px;
+    }
+
+    .offer-title {
+        font-size: 2.5rem;
+    }
+
+    .offer-description {
+        font-size: 11px;
+    }
+}
