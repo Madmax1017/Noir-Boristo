@@ -1,11 +1,9 @@
-
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import ambienceImages from "./ambience.js";
-
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -16,37 +14,39 @@ export default function Gallery() {
     () => {
       const frames = gsap.utils.toArray(".ambience-frame");
 
+      // Batch/Loop setup for smooth staggered entrance
       frames.forEach((frame) => {
         const image = frame.querySelector(".ambience-image");
 
         const reveal = gsap.timeline({
           scrollTrigger: {
             trigger: frame,
-            start: "top 85%",
+            start: "top 90%",
             once: true,
           },
         });
 
+        // Use hardware-accelerated opacity & y-translation instead of layout-heavy clip-path
         reveal
           .fromTo(
             frame,
             {
-              clipPath: "inset(10% 5% 10% 5%)",
-              y: 45,
+              opacity: 0,
+              y: 50,
             },
             {
-              clipPath: "inset(0% 0% 0% 0%)",
+              opacity: 1,
               y: 0,
-              duration: 1,
+              duration: 0.9,
               ease: "power3.out",
             }
           )
           .fromTo(
             image,
-            { scale: 1.15 },
+            { scale: 1.12 },
             {
               scale: 1,
-              duration: 1.2,
+              duration: 1.1,
               ease: "power3.out",
             },
             "<"
@@ -54,14 +54,14 @@ export default function Gallery() {
       });
 
       gsap.from(".ambience-copy", {
-        y: 30,
+        y: 25,
         opacity: 0,
         duration: 0.8,
-        stagger: 0.12,
+        stagger: 0.1,
         ease: "power3.out",
         scrollTrigger: {
           trigger: galleryRef.current,
-          start: "top 75%",
+          start: "top 80%",
           once: true,
         },
       });
@@ -78,7 +78,7 @@ export default function Gallery() {
   const renderImage = (item, number, aspect = "aspect-[4/3]") => (
     <figure key={item.id} className="min-w-0">
       <div
-        className={`ambience-frame group relative ${aspect} overflow-hidden bg-noir-black`}
+        className={`ambience-frame group relative ${aspect} overflow-hidden bg-noir-black [transform:translateZ(0)]`}
       >
         <img
           src={item.image}
@@ -88,7 +88,7 @@ export default function Gallery() {
             console.error("Ambience image failed to load:", item.image);
             event.currentTarget.alt = `${item.alt} (image failed to load)`;
           }}
-          className="ambience-image h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+          className="ambience-image h-full w-full object-cover will-change-transform transition-transform duration-700 ease-out group-hover:scale-[1.03]"
         />
 
         <span className="absolute left-4 top-4 bg-noir-red px-3 py-2 font-anton text-xs tracking-widest text-noir-black">
@@ -119,7 +119,7 @@ export default function Gallery() {
           STEP INSIDE / NOIR BISTRO
         </p>
 
-        {/* Main heading — single line on desktop */}
+        {/* Main heading */}
         <h2 className="ambience-copy font-anton text-[clamp(2.4rem,5vw,5rem)] uppercase leading-none tracking-tight text-noir-black">
           A MOOD OF ITS OWN.
         </h2>
