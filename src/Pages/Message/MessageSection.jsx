@@ -1,4 +1,3 @@
-
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -25,8 +24,9 @@ export default function MessageSection() {
                 linesClass: "message-line",
             });
 
+            // Target red color on scroll instead of white
             gsap.to(firstSplit.words, {
-                color: "#faeade",
+                color: "#b62429", // Replace with your exact red hex code if different
                 stagger: 0.08,
                 ease: "power1.in",
                 scrollTrigger: {
@@ -38,7 +38,7 @@ export default function MessageSection() {
             });
 
             gsap.to(secondSplit.words, {
-                color: "#faeade",
+                color: "#b62429", // Replace with your exact red hex code if different
                 stagger: 0.08,
                 ease: "power1.in",
                 scrollTrigger: {
@@ -121,13 +121,13 @@ export default function MessageSection() {
                 </div>
 
                 <div className="mt-10 flex items-center justify-between border-t border-noir-red/30 pt-5">
-          <span className="font-anton text-xs uppercase tracking-[0.2em] text-noir-red/70 sm:text-sm">
-            NOIR BISTRO
-          </span>
+                    <span className="font-anton text-xs uppercase tracking-[0.2em] text-noir-red/70 sm:text-sm">
+                        NOIR BISTRO
+                    </span>
 
                     <span className="text-xs uppercase tracking-[0.15em] text-noir-red/70 sm:text-sm">
-            Made for good moments.
-          </span>
+                        Made for good moments.
+                    </span>
                 </div>
             </div>
         </section>
