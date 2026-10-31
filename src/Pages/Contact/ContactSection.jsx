@@ -146,7 +146,7 @@ export default function ContactSection() {
         05
       </div>
 
-      <div className="relative mx-auto max-w-[1400px] px-6 py-28 md:px-14 lg:px-20 md:py-40 lg:py-48">
+      <div className="relative mx-auto max-w-[1400px] px-6 pt-28 pb-16 md:px-14 lg:px-20 md:pt-40 lg:pt-48 md:pb-20">
         {/* ── Row 1: Badge + Kicker ───────────────────── */}
         <div className="flex items-center gap-5 mb-10">
           <div ref={badgeRef} className="contact-badge">
@@ -210,6 +210,35 @@ export default function ContactSection() {
             <p ref={taglineSubRef} className="text-[10px] tracking-[0.25em] text-[#0A0A0A] opacity-40">
               MADE FOR THE MOMENT.
             </p>
+          </div>
+        </div>
+
+        {/* ── Bottom Sub-Footer Bar ───────────────────── */}
+        <div className="mt-20 md:mt-28 pt-8 border-t border-[#0A0A0A]/15 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs tracking-[0.15em] opacity-80">
+          <p>© {new Date().getFullYear()} NOIR BISTRO. ALL RIGHTS RESERVED.</p>
+
+          <div className="flex items-center gap-6">
+            <a
+              href="https://www.instagram.com/noirbistro.in?utm_source=ig_web_button_share_sheet&xtok=ZDNlZDc0MzIxNw=="
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Noir Bistro Instagram"
+              className="group flex items-center gap-2 font-bold transition-opacity hover:opacity-60"
+            >
+              <span>INSTAGRAM</span>
+              <svg
+                className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M7 17L17 7M7 7H17V17" />
+              </svg>
+            </a>
           </div>
         </div>
       </div>
