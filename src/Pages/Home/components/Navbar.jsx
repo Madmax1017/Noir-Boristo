@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const navigationLinks = [
     { number: "01", label: "HOME", href: "#home" },
-    { number: "02", label: "THE MENU", href: "#menu" },
+    { number: "02", label: "THE MENU", href: "/full-menu" },
     { number: "03", label: "OUR STORY", href: "#story" },
     { number: "04", label: "FIND US", href: "#location" },
 ];
@@ -50,9 +51,27 @@ export default function Navbar() {
     const closeButtonRef = useRef(null);
     const overlayRef = useRef(null);
 
+    // --- FIX: Moved navigate() inside the component block ---
+    const navigate = useNavigate();
+
     const closeMenu = () => {
         setIsOpen(false);
         setActiveLink(null);
+    };
+
+    const handleNavigation = (href) => {
+        closeMenu();
+
+        if (href.startsWith("/")) {
+            navigate(href);
+        } else if (href.includes("#")) {
+            const [path, hash] = href.split("#");
+            if (window.location.pathname !== "/") {
+                navigate("/" + (hash ? `#${hash}` : ""));
+            } else {
+                document.getElementById(hash)?.scrollIntoView({ behavior: "smooth" });
+            }
+        }
     };
 
     useEffect(() => {
@@ -109,24 +128,6 @@ export default function Navbar() {
             menuButtonRef.current?.focus({ preventScroll: true });
         }
     }, [isOpen]);
-
-    const handleNavigation = (href) => {
-        closeMenu();
-
-        if (href.startsWith("#")) {
-            const targetId = href.slice(1);
-
-            requestAnimationFrame(() => {
-                document.getElementById(targetId)?.scrollIntoView({
-                    behavior: window.matchMedia(
-                        "(prefers-reduced-motion: reduce)"
-                    ).matches
-                        ? "auto"
-                        : "smooth",
-                });
-            });
-        }
-    };
 
     return (
         <>

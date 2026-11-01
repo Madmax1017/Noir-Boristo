@@ -9,6 +9,7 @@ import ContactSection from "../Contact/ContactSection";
 import OfferSection from "../OfferSection/OfferSection";
 import LocationSection from "../Locations/LocationSection";
 
+
 export default function Home() {
     return (
         <main
@@ -18,6 +19,7 @@ export default function Home() {
             <Navbar />
             <HeroSection />
             <SignatureDishes />
+
             <OfferSection />
             <MessageSection />
             <AboutSection />
