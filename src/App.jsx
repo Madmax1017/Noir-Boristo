@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./Pages/Home/components/Navbar";
 import Home from "./Pages/Home/Home"; // Your full home page component
-import MenuSection from "./Pages/menu/MenuSection"; // Your MenuSection file
+import MenuSection from "./Pages/Menu/MenuSection"; // Your MenuSection file
 
 export default function App() {
   return (
