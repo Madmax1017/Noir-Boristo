@@ -2,89 +2,76 @@
    NOIR BISTRO — HERO / LOGO GRID
 ================================= */
 
-/* ── Section (Red Background Base) ── */
+/* ── Section ── */
 
 .hero-grid {
+    /* If your navbar sits above/over the hero, set this to its height
+       so the red grid starts right below it (reference: black nav strip). */
+    --hero-nav-h: 0px;
+
+    /* Thin gutter between cells (was far too heavy before) */
+    --hero-gap: clamp(4px, 0.5vw, 8px);
+
     position: relative;
+    isolation: isolate;
     width: 100%;
     min-height: 100svh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     overflow: hidden;
-    background: #ea0001;
-    /* Your signature Noir Red */
+    background: #0d0d0d;
 }
 
-/* ── CSS Gridlines (Thick Black Frame + Red Box Cells) ── */
+/* ── Cell grid: 5 cols x 3 rows, centre cell spans 2 rows ── */
 
-.hero-grid__lines {
+.hero-grid__cells {
     position: absolute;
-    inset: 0;
-    pointer-events: none;
+    inset: var(--hero-nav-h) 0 0 0;
     z-index: 1;
 
-    /* Base background is solid black to form the thick borders */
-    background-color: #0a0a0a;
-
-    /* Creates repeating red card cells separated by thick black gaps */
-    background-image:
-        linear-gradient(to right, #ea0001 0px, #ea0001 100%),
-        linear-gradient(to bottom, #ea0001 0px, #ea0001 100%);
-
-    /* This creates the box grid size. Adjust width/height as desired. */
-    background-size: calc(20% - 6px) calc(33.333% - 6px);
-    /* or use fixed px like 260px 220px */
+    display: grid;
+    gap: var(--hero-gap);
+    grid-template-columns:
+        minmax(0, 1fr) minmax(0, 1.08fr) minmax(0, 1.5fr) minmax(0, 1.06fr) minmax(0, 1fr);
+    grid-template-rows:
+        minmax(0, 1.37fr) minmax(0, 1fr) minmax(0, 1fr);
 }
 
-/* Let's use a cleaner repeating linear grid approach that guarantees the red boxes and black borders */
-.hero-grid__lines {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 1;
-
-    background-color: #0a0a0a;
-    /* Thick black grid lines */
-    background-image:
-        linear-gradient(90deg, #0a0a0a 6px, #ea0001 6px, #ea0001 calc(100% - 6px), #0a0a0a 100%),
-        linear-gradient(0deg, #0a0a0a 6px, transparent 6px, transparent calc(100% - 6px), #0a0a0a 100%);
-
-    /* Grid cell repeat dimensions */
-    background-size: 280px 240px;
-    background-position: center;
+.hero-grid__cell {
+    position: relative;
+    background: radial-gradient(130% 130% at 12% 8%,
+            #e30000 0%,
+            #c40000 42%,
+            #8c0000 100%);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.07),
+        inset 0 -40px 80px rgba(0, 0, 0, 0.16);
+    will-change: transform, opacity;
 }
 
-/* ── Centred logo container ── */
+.hero-grid__cell--center {
+    grid-row: span 2;
+    display: grid;
+    place-items: center;
+}
+
+/* ── Logo ── */
 
 .hero-grid__logo-wrap {
     position: relative;
-    z-index: 3;
+    width: min(68%, 22rem);
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 45vw;
-    max-width: 420px;
-    min-width: 200px;
-
-    /* start invisible — GSAP handles reveal */
+    /* GSAP reveals it */
     opacity: 0;
 }
 
 .hero-grid__logo {
+    display: block;
     width: 100%;
     height: auto;
-
     object-fit: contain;
-    display: block;
-
     user-select: none;
     -webkit-user-drag: none;
 }
 
-/* subtle idle breathing after GSAP reveal */
 @keyframes hero-breathe {
 
     0%,
@@ -101,48 +88,118 @@
     animation: hero-breathe 5s ease-in-out infinite;
 }
 
-/* ── Grid scan line overlay ── */
+/* ── Light layers (blend modes keep the black gutters black) ── */
 
-.hero-grid__scan {
+.hero-grid__sheen {
+    position: absolute;
+    inset: var(--hero-nav-h) auto 0 0;
+    z-index: 2;
+    width: 45%;
+    pointer-events: none;
+    opacity: 0;
+    mix-blend-mode: overlay;
+    background: linear-gradient(100deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0) 30%,
+            rgba(255, 255, 255, 0.3) 50%,
+            rgba(255, 255, 255, 0) 70%,
+            transparent 100%);
+}
+
+.hero-grid__spot {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    width: 640px;
+    height: 640px;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    mix-blend-mode: overlay;
+    background: radial-gradient(circle,
+            rgba(255, 255, 255, 0.35) 0%,
+            rgba(255, 255, 255, 0) 65%);
+}
+
+/* Edge vignette for depth */
+.hero-grid::before {
+    content: "";
     position: absolute;
     inset: 0;
+    z-index: 3;
     pointer-events: none;
-    z-index: 2;
+    background: radial-gradient(ellipse at 50% 50%,
+            transparent 55%,
+            rgba(0, 0, 0, 0.35) 100%);
+}
 
-    background: linear-gradient(to bottom,
-            transparent 0%,
-            rgba(10, 10, 10, 0.15) 48%,
-            rgba(10, 10, 10, 0.15) 52%,
-            transparent 100%);
-
-    background-size: 100% 30%;
-    background-repeat: no-repeat;
-    background-position: 0% -30%;
-
-    opacity: 0;
+/* Fine film grain */
+.hero-grid::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    opacity: 0.07;
+    mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 /* ── Responsive ── */
 
 @media (max-width: 768px) {
-    .hero-grid__lines {
-        background-size: 180px 160px;
+    .hero-grid__cells {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-rows:
+            minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1.2fr) minmax(0, 1fr);
+    }
+
+    /* Simplified 3-col layout: show 6 small cells + the centre cell */
+    .hero-grid__cell:nth-child(1) {
+        grid-area: 1 / 1;
+    }
+
+    .hero-grid__cell:nth-child(2) {
+        grid-area: 1 / 2;
+    }
+
+    .hero-grid__cell:nth-child(4) {
+        grid-area: 1 / 3;
+    }
+
+    .hero-grid__cell--center {
+        grid-area: 2 / 1 / 4 / 4;
+    }
+
+    .hero-grid__cell:nth-child(10) {
+        grid-area: 4 / 1;
+    }
+
+    .hero-grid__cell:nth-child(11) {
+        grid-area: 4 / 2;
+    }
+
+    .hero-grid__cell:nth-child(13) {
+        grid-area: 4 / 3;
+    }
+
+    .hero-grid__cell:nth-child(5),
+    .hero-grid__cell:nth-child(6),
+    .hero-grid__cell:nth-child(7),
+    .hero-grid__cell:nth-child(8),
+    .hero-grid__cell:nth-child(9),
+    .hero-grid__cell:nth-child(12),
+    .hero-grid__cell:nth-child(14) {
+        display: none;
     }
 
     .hero-grid__logo-wrap {
-        width: 65vw;
-        max-width: 320px;
-    }
-}
-
-@media (max-width: 480px) {
-    .hero-grid__lines {
-        background-size: 140px 140px;
+        width: min(62%, 18rem);
     }
 
-    .hero-grid__logo-wrap {
-        width: 75vw;
-        max-width: 260px;
+    .hero-grid__spot {
+        display: none;
     }
 }
 

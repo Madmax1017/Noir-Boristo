@@ -143,7 +143,7 @@ export default function Navbar() {
                         className="relative z-10 inline-flex items-center"
                     >
                         <img
-                            src="/images/Noir-Bistro-logo.png"
+                            src="/images/Noir_logo-red.png"
                             alt="Noir Bistro"
                             className="h-10 w-auto object-contain sm:h-12 lg:h-14"
                         />
@@ -192,7 +192,7 @@ export default function Navbar() {
                 aria-modal={isOpen ? "true" : undefined}
                 aria-label="Noir Bistro navigation"
                 aria-hidden={!isOpen}
-                inert={!isOpen}
+                inert={!isOpen ? "" : undefined}
                 className={`fixed inset-0 z-50 flex lg:hidden flex-col overflow-y-auto bg-noir-black text-noir-red transition-[clip-path,visibility] duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${isOpen
                         ? "visible [clip-path:inset(0%_0%_0%_0%)]"
                         : "invisible [clip-path:inset(0%_0%_100%_0%)]"
@@ -210,7 +210,7 @@ export default function Navbar() {
                         className="inline-flex items-center"
                     >
                         <img
-                            src="/images/Noir-Bistro-logo.png"
+                            src="/images/Noir_logo-red.png"
                             alt="Noir Bistro"
                             className="h-10 w-auto object-contain sm:h-12"
                         />
