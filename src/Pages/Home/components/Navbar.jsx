@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+// Update this path to the actual path of your full menu page
+const MENU_PAGE_URL = "/full-menu";
+
 const navigationLinks = [
     { number: "01", label: "HOME", href: "#home" },
-    { number: "02", label: "THE MENU", href: "/full-menu" },
+    { number: "02", label: "THE MENU", href: MENU_PAGE_URL },
     { number: "03", label: "OUR STORY", href: "#story" },
     { number: "04", label: "FIND US", href: "#location" },
 ];
@@ -50,8 +53,6 @@ export default function Navbar() {
     const menuButtonRef = useRef(null);
     const closeButtonRef = useRef(null);
     const overlayRef = useRef(null);
-
-    // --- FIX: Moved navigate() inside the component block ---
     const navigate = useNavigate();
 
     const closeMenu = () => {
@@ -135,53 +136,57 @@ export default function Navbar() {
             <header className="fixed inset-x-0 top-0 z-40 bg-noir-black/95 backdrop-blur-md shadow-lg text-noir-red">
                 <nav
                     aria-label="Main navigation"
-                    className="mx-auto flex w-full items-center justify-between px-5 py-3 sm:px-8 sm:py-3.5 lg:px-[5vw] lg:py-4 max-w-7xl"
+                    // --- REDUCED PADDING TO MAKE IT THINNER ---
+                    className="flex w-full items-center justify-between px-5 py-3.5 sm:px-10 lg:px-16"
                 >
-                    {/* Logo at Left */}
+                    {/* --- LOGO: Force Left Alignment and Increase Size --- */}
                     <a
                         href="#home"
                         aria-label="Noir Bistro home"
-                        className="relative z-10 inline-flex items-center"
+                        className="relative z-10 inline-flex items-center flex-shrink-0"
                     >
                         <img
                             src="/images/Noir_logo-red.png"
                             alt="Noir Bistro"
-                            className="h-10 w-auto object-contain sm:h-12 lg:h-14"
+                            className="h-16 w-auto object-contain sm:h-20 lg:h-24" // INCREASED SIZES
                         />
                     </a>
 
-                    {/* Desktop Horizontal Navigation Links */}
-                    <div className="hidden lg:flex items-center gap-1.5">
-                        {navigationLinks.map((link) => (
-                            <a
-                                key={link.number}
-                                href={link.href}
-                                onClick={(event) => {
-                                    event.preventDefault();
-                                    handleNavigation(link.href);
-                                }}
-                                className="relative rounded-full px-4 py-2 text-xs font-bold tracking-[0.18em] text-noir-red transition-all duration-300 hover:bg-noir-red hover:text-noir-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-noir-red"
-                            >
-                                {link.label}
-                            </a>
-                        ))}
-                    </div>
+                    {/* --- Desktop Links and Mobile Trigger Grouped for Right Alignment --- */}
+                    <div className="flex items-center gap-6 sm:gap-10 lg:gap-12 flex-shrink-0">
+                        {/* --- Desktop Horizontal Navigation Links (Shifted Right) --- */}
+                        <div className="hidden lg:flex items-center gap-2">
+                            {navigationLinks.map((link) => (
+                                <a
+                                    key={link.number}
+                                    href={link.href}
+                                    onClick={(event) => {
+                                        event.preventDefault();
+                                        handleNavigation(link.href);
+                                    }}
+                                    className="relative rounded-full px-5 py-2.5 text-xs sm:text-sm font-anton uppercase tracking-[0.2em] text-noir-red transition-all duration-300 hover:bg-noir-red hover:text-noir-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-noir-red"
+                                >
+                                    {link.label}
+                                </a>
+                            ))}
+                        </div>
 
-                    {/* Menu Trigger at Right (Mobile Only) */}
-                    <button
-                        ref={menuButtonRef}
-                        type="button"
-                        onClick={() => setIsOpen((previous) => !previous)}
-                        aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
-                        aria-expanded={isOpen}
-                        aria-controls="noir-fullscreen-menu"
-                        className="group relative z-10 flex lg:hidden min-h-10 items-center gap-2 rounded-sm px-2 text-noir-red transition-opacity duration-300 hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-noir-red"
-                    >
-                        <span className="hidden text-xs font-bold tracking-[0.22em] sm:inline">
-                            {isOpen ? "CLOSE" : "MENU"}
-                        </span>
-                        <MenuIcon isOpen={isOpen} />
-                    </button>
+                        {/* --- Menu Trigger at Right (Mobile Only) --- */}
+                        <button
+                            ref={menuButtonRef}
+                            type="button"
+                            onClick={() => setIsOpen((previous) => !previous)}
+                            aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
+                            aria-expanded={isOpen}
+                            aria-controls="noir-fullscreen-menu"
+                            className="group relative z-10 flex lg:hidden min-h-12 items-center gap-3 rounded-sm px-3 text-noir-red transition-opacity duration-300 hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-noir-red"
+                        >
+                            <span className="hidden text-xs sm:text-sm font-anton uppercase tracking-[0.25em] sm:inline">
+                                {isOpen ? "CLOSE" : "MENU"}
+                            </span>
+                            <MenuIcon isOpen={isOpen} />
+                        </button>
+                    </div>
                 </nav>
             </header>
 
@@ -195,12 +200,12 @@ export default function Navbar() {
                 aria-hidden={!isOpen}
                 inert={!isOpen ? "" : undefined}
                 className={`fixed inset-0 z-50 flex lg:hidden flex-col overflow-y-auto bg-noir-black text-noir-red transition-[clip-path,visibility] duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${isOpen
-                        ? "visible [clip-path:inset(0%_0%_0%_0%)]"
-                        : "invisible [clip-path:inset(0%_0%_100%_0%)]"
+                    ? "visible [clip-path:inset(0%_0%_0%_0%)]"
+                    : "invisible [clip-path:inset(0%_0%_100%_0%)]"
                     }`}
             >
                 {/* Overlay Header */}
-                <div className="flex shrink-0 items-center justify-between px-5 py-4 sm:px-8">
+                <div className="flex shrink-0 items-center justify-between px-5 py-6 sm:px-10">
                     <a
                         href="#home"
                         onClick={(event) => {
@@ -208,12 +213,12 @@ export default function Navbar() {
                             handleNavigation("#home");
                         }}
                         aria-label="Noir Bistro home"
-                        className="inline-flex items-center"
+                        className="inline-flex items-center flex-shrink-0"
                     >
                         <img
                             src="/images/Noir_logo-red.png"
                             alt="Noir Bistro"
-                            className="h-10 w-auto object-contain sm:h-12"
+                            className="h-16 w-auto object-contain sm:h-20" // Increased Size on Mobile
                         />
                     </a>
 
@@ -224,11 +229,11 @@ export default function Navbar() {
                         onClick={closeMenu}
                         aria-label="Close navigation menu"
                         tabIndex={isOpen ? 0 : -1}
-                        className="flex min-h-10 min-w-10 items-center justify-center transition-transform duration-300 hover:rotate-90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-noir-red"
+                        className="flex min-h-12 min-w-12 items-center justify-center transition-transform duration-300 hover:rotate-90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-noir-red"
                     >
                         <svg
-                            width="24"
-                            height="24"
+                            width="28"
+                            height="28"
                             viewBox="0 0 24 24"
                             fill="none"
                             aria-hidden="true"
@@ -236,7 +241,7 @@ export default function Navbar() {
                             <path
                                 d="M5 5L19 19M19 5L5 19"
                                 stroke="currentColor"
-                                strokeWidth="1.8"
+                                strokeWidth="2.2"
                                 strokeLinecap="round"
                             />
                         </svg>
@@ -244,8 +249,8 @@ export default function Navbar() {
                 </div>
 
                 {/* Navigation Links */}
-                <div className="mx-auto flex w-full flex-1 flex-col justify-center px-5 py-8 sm:px-8">
-                    <p className="mb-6 text-[10px] font-bold tracking-[0.32em] opacity-70 sm:mb-8 sm:text-xs">
+                <div className="mx-auto flex w-full flex-1 flex-col justify-center px-5 py-10 sm:px-10">
+                    <p className="mb-8 text-[11px] font-anton uppercase tracking-[0.4em] opacity-80 sm:mb-10 sm:text-sm text-noir-black bg-noir-red px-3 py-1 inline-block w-fit">
                         EXPLORE NOIR
                     </p>
 
@@ -267,24 +272,24 @@ export default function Navbar() {
                                         ? `${index * 75}ms`
                                         : "0ms",
                                 }}
-                                className={`group flex items-center gap-3 border-b border-noir-red/20 py-3 transition-[opacity,transform] duration-500 ease-out sm:gap-5 sm:py-4 ${isOpen
-                                        ? "translate-y-0 opacity-100"
-                                        : "translate-y-8 opacity-0"
+                                className={`group flex items-center gap-4 border-b border-noir-red/30 py-4 transition-[opacity,transform] duration-500 ease-out sm:gap-6 sm:py-6 ${isOpen
+                                    ? "translate-y-0 opacity-100"
+                                    : "translate-y-8 opacity-0"
                                     }`}
                             >
-                                <span className="w-6 shrink-0 pt-1 text-[10px] font-bold opacity-70 sm:w-8 sm:text-xs">
+                                <span className="w-8 shrink-0 pt-1 text-[11px] font-bold opacity-80 sm:w-10 sm:text-sm">
                                     {link.number}
                                 </span>
 
                                 <span
-                                    className={`font-anton text-[clamp(2.5rem,7.5vw,4.5rem)] leading-[0.98] tracking-tight transition-transform duration-300 ease-out ${activeLink === index ? "translate-x-2" : ""
+                                    className={`font-anton text-[clamp(2.5rem,7.5vw,4.5rem)] leading-[0.98] tracking-tight transition-transform duration-300 ease-out ${activeLink === index ? "translate-x-3" : ""
                                         }`}
                                 >
                                     {link.label}
                                 </span>
 
-                                <span className="ml-auto shrink-0 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1">
-                                    <ArrowIcon />
+                                <span className="ml-auto shrink-0 transition-transform duration-300 group-hover:-translate-y-1.5 group-hover:translate-x-1.5">
+                                    <ArrowIcon className="w-8 h-8 sm:w-10 sm:h-10" />
                                 </span>
                             </a>
                         ))}
@@ -292,12 +297,12 @@ export default function Navbar() {
                 </div>
 
                 {/* Overlay Footer */}
-                <div className="flex shrink-0 flex-col gap-4 border-t border-noir-red/20 px-5 py-5 sm:flex-row sm:items-end sm:justify-between sm:px-8">
-                    <div className="space-y-2">
-                        <p className="text-[10px] font-bold tracking-[0.2em] sm:text-xs">
+                <div className="flex shrink-0 flex-col gap-5 border-t border-noir-red/30 px-5 py-6 sm:flex-row sm:items-end sm:justify-between sm:px-10">
+                    <div className="space-y-3">
+                        <p className="text-[11px] font-anton uppercase tracking-[0.25em] sm:text-sm">
                             CHINESE · CONTINENTAL · CAFE
                         </p>
-                        <p className="text-[9px] tracking-[0.15em] opacity-70 sm:text-[10px]">
+                        <p className="text-[10px] tracking-[0.2em] opacity-80 sm:text-xs">
                             GOOD FOOD. DISTINCTIVE EXPERIENCES.
                         </p>
                     </div>
@@ -308,7 +313,7 @@ export default function Navbar() {
                             event.preventDefault();
                             closeMenu();
                         }}
-                        className="group flex w-fit items-center gap-2 text-xs font-bold tracking-[0.15em]"
+                        className="group flex w-fit items-center gap-3 text-sm sm:text-base font-anton uppercase tracking-[0.2em]"
                     >
                         INSTAGRAM
                         <span className="transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1">

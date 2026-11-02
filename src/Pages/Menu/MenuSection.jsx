@@ -4,7 +4,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
 import CafeMenu from "./CafeMenu"; // or "./menu/CafeMenu"
-// import ChineseMenu from "./ChineseMenu"; // or "./menu/ChineseMenu"
+import ChineseMenu from "./ChineseMenu";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
