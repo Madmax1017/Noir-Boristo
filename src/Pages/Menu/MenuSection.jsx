@@ -9,8 +9,8 @@ import ChineseMenu from "./ChineseMenu";
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const TABS = [
-    { id: "cafe", emoji: "☕", label: "Cafe Menu" },
-    { id: "chinese", emoji: "🥢", label: "Chinese Menu" },
+    { id: "cafe",  label: "Continental Menu" },
+    { id: "chinese",  label: "Chinese Menu" },
 ];
 
 const prefersReducedMotion = () =>

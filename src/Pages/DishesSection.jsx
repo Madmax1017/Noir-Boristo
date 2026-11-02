@@ -63,7 +63,7 @@ const dishes = [
 ];
 
 /* Anton has no Devanagari glyphs, so Marathi needs its own font stack.
-   Add "Noto Sans Devanagari" (or Mukta) to your site fonts for best results. */
+    Add "Noto Sans Devanagari" (or Mukta) to your site fonts for best results. */
 const MARATHI_FONT =
     '"Noto Sans Devanagari", "Mukta", "Nirmala UI", "Mangal", sans-serif';
 
@@ -332,8 +332,8 @@ export default function DishesSection() {
             aria-label="Noir Bistro dishes"
             className="relative flex min-h-[100svh] flex-col overflow-hidden bg-noir-red text-noir-black"
         >
-            {/* Header: title + navigation */}
-            <header className="relative z-10 flex items-start justify-between gap-4 px-5 pt-6 sm:px-10 sm:pt-10">
+            {/* Header: title + navigation (items-center applied here to align arrows downwards with the title) */}
+            <header className="relative z-10 flex items-center justify-between gap-4 px-5 pt-8 sm:px-10 sm:pt-12">
                 <h2 className="font-anton text-4xl uppercase leading-none sm:text-6xl">
                     Our dishes
                 </h2>

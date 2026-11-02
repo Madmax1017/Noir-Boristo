@@ -3,294 +3,536 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
-const MAPS_URL = "https://maps.app.goo.gl/ZH3vTzpijBm6sryU6";
+/* -------------------------------------------------------------------------- */
+/*  Data                                                                      */
+/* -------------------------------------------------------------------------- */
 
-/**
- * Replace these placeholders with real details, or pass them as props:
- *   <LocationSection address={[...]} hours={[...]} phone="..." email="..." />
- *
- * Optional: pass `mapEmbedSrc` (the src from Google Maps > Share > Embed a map)
- * to show a live interactive map. The short maps.app.goo.gl link can't be
- * embedded in an iframe, so without it a styled map card is shown instead.
- */
-const DEFAULT_ADDRESS = ["Gala No.06, 1951/1: CHENDHARE: ALIBAG RAIGAD Chendhare  ", "Alibag, Maharashtra 402201"];
-
-const DEFAULT_HOURS = [
-    { days: "Monday to Friday", time: "9:00 AM to 10:00 PM" },
-    { days: "Saturday", time: "9:00 AM to 12:00 PM" },
-    { days: "Sunday", time: "9:00 AM to 11:00 PM" },
+const ADDRESS_LINES = [
+  "Gala No.06, 1951/1: CHENDHARE: ALIBAG RAIGAD Chendhare",
+  "Alibag, Maharashtra 402201",
 ];
 
-const ArrowUpRight = () => (
-    <svg
-        viewBox="0 0 24 24"
-        className="h-6 w-6 shrink-0 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="3"
-        strokeLinecap="square"
-        aria-hidden="true"
-    >
-        <path d="M6 18L18 6M8 6h10v10" />
-    </svg>
-);
+const HOURS = [
+  { day: "Monday to Friday", time: "9:00 AM to 10:00 PM" },
+  { day: "Saturday", time: "9:00 AM to 12:00 PM" },
+  { day: "Sunday", time: "9:00 AM to 11:00 PM" },
+];
 
-const LocationSection = ({
-    imageSrc = "/images/noir-hero.jpg",
-    imageAlt = "Noir Bistro cafe exterior",
-    address = DEFAULT_ADDRESS,
-    hours = DEFAULT_HOURS,
-    phone = "+00 000 000 0000",
-    email = "hello@noirbistro.com",
-    mapEmbedSrc = "",
-}) => {
-    const sectionRef = useRef(null);
+const PHONE = "+91 000 000 0000";
+const EMAIL = "hello@noirbistro.com";
+const MAPS_URL = "https://maps.app.goo.gl/ZH3vTzpijBm6sryU6";
 
-    useGSAP(
-        () => {
-            const mm = gsap.matchMedia();
+/* -------------------------------------------------------------------------- */
+/*  Vector icons (linework only, no emoji)                                    */
+/* -------------------------------------------------------------------------- */
 
-            mm.add("(prefers-reduced-motion: no-preference)", () => {
-                // Headline and image arrive together as the section's main moment.
-                const intro = gsap.timeline({
-                    defaults: { ease: "power4.out" },
-                    scrollTrigger: {
-                        trigger: sectionRef.current,
-                        start: "top 70%",
-                        once: true,
-                    },
-                });
-
-                intro
-                    .from("[data-eyebrow]", { opacity: 0, x: -24, duration: 0.6 })
-                    .from(
-                        "[data-line]",
-                        { yPercent: 110, duration: 0.9, stagger: 0.1 },
-                        "-=0.3"
-                    )
-                    .from(
-                        "[data-image]",
-                        {
-                            clipPath: "inset(0% 0% 100% 0%)",
-                            duration: 1.1,
-                            ease: "expo.inOut",
-                        },
-                        "-=0.8"
-                    )
-                    .from(
-                        "[data-detail]",
-                        { opacity: 0, y: 30, duration: 0.7, stagger: 0.12 },
-                        "-=0.6"
-                    );
-
-                // The map card reveals on its own once it scrolls into view.
-                gsap.from("[data-map]", {
-                    opacity: 0,
-                    y: 50,
-                    duration: 0.9,
-                    ease: "power3.out",
-                    scrollTrigger: {
-                        trigger: "[data-map]",
-                        start: "top 85%",
-                        once: true,
-                    },
-                });
-
-                // Subtle parallax on the venue photo.
-                gsap.fromTo(
-                    "[data-parallax]",
-                    { yPercent: -5 },
-                    {
-                        yPercent: 5,
-                        ease: "none",
-                        scrollTrigger: {
-                            trigger: "[data-image]",
-                            start: "top bottom",
-                            end: "bottom top",
-                            scrub: true,
-                        },
-                    }
-                );
-            });
-
-            return () => mm.revert();
-        },
-        { scope: sectionRef }
-    );
-
-    return (
-        <section
-            id="location"
-            ref={sectionRef}
-            aria-labelledby="location-title"
-            className="bg-noir-black text-noir-red"
-        >
-            <div className="mx-auto max-w-7xl px-5 py-20 sm:px-10 sm:py-28">
-                {/* Heading */}
-                <div className="mb-12 sm:mb-16">
-                    <p
-                        data-eyebrow
-                        className="font-anton text-lg uppercase tracking-widest sm:text-xl"
-                    >
-                        Find us / Noir Bistro
-                    </p>
-                    <h2
-                        id="location-title"
-                        className="mt-4 font-anton text-[clamp(3.5rem,11vw,9rem)] uppercase leading-[0.88]"
-                    >
-                        <span className="block overflow-hidden">
-                            <span data-line className="block">
-                                Come on in
-                            </span>
-                        </span>
-                    </h2>
-                </div>
-
-                {/* Image + details */}
-                <div className="grid gap-12 lg:grid-cols-12 lg:gap-14">
-                    <div className="lg:col-span-7">
-                        <figure
-                            data-image
-                            className="relative aspect-[4/3] overflow-hidden border-4 border-noir-red"
-                        >
-                            <img
-                                data-parallax
-                                src={imageSrc}
-                                alt={imageAlt}
-                                loading="lazy"
-                                className="absolute inset-x-0 -top-[8%] h-[116%] w-full object-cover"
-                            />
-                        </figure>
-                    </div>
-
-                    <dl className="flex flex-col gap-8 lg:col-span-5">
-                        <div data-detail className="border-t-4 border-noir-red pt-5">
-                            <dt className="font-anton text-3xl uppercase tracking-wide sm:text-4xl">
-                                Address
-                            </dt>
-                            <dd className="mt-3 text-lg leading-relaxed text-white/80">
-                                {address.map((line) => (
-                                    <span key={line} className="block">
-                                        {line}
-                                    </span>
-                                ))}
-                            </dd>
-                        </div>
-
-                        <div data-detail className="border-t-4 border-noir-red pt-5">
-                            <dt className="font-anton text-3xl uppercase tracking-wide sm:text-4xl">
-                                Opening hours
-                            </dt>
-                            <dd className="mt-3">
-                                <ul className="divide-y divide-white/15 text-lg text-white/80">
-                                    {hours.map((row) => (
-                                        <li
-                                            key={row.days}
-                                            className="flex items-baseline justify-between gap-6 py-2"
-                                        >
-                                            <span>{row.days}</span>
-                                            <span className="text-right">{row.time}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </dd>
-                        </div>
-
-                        <div data-detail className="border-t-4 border-noir-red pt-5">
-                            <dt className="font-anton text-3xl uppercase tracking-wide sm:text-4xl">
-                                Contact
-                            </dt>
-                            <dd className="mt-3 flex flex-col gap-1 text-lg text-white/80">
-                                <a
-                                    href={`tel:${phone.replace(/[^+\d]/g, "")}`}
-                                    className="w-fit underline decoration-noir-red decoration-2 underline-offset-4 transition-colors hover:text-noir-red focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-noir-red"
-                                >
-                                    {phone}
-                                </a>
-                                <a
-                                    href={`mailto:${email}`}
-                                    className="w-fit underline decoration-noir-red decoration-2 underline-offset-4 transition-colors hover:text-noir-red focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-noir-red"
-                                >
-                                    {email}
-                                </a>
-                            </dd>
-                        </div>
-                    </dl>
-                </div>
-
-                {/* Map card */}
-                <div
-                    data-map
-                    className="mt-16 grid overflow-hidden border-4 border-noir-red bg-noir-red text-noir-black sm:mt-24 lg:grid-cols-12"
-                >
-                    <div className="relative min-h-[16rem] lg:col-span-7 lg:min-h-[22rem]">
-                        {mapEmbedSrc ? (
-                            <iframe
-                                title="Noir Bistro location on Google Maps"
-                                src={mapEmbedSrc}
-                                loading="lazy"
-                                referrerPolicy="no-referrer-when-downgrade"
-                                allowFullScreen
-                                className="absolute inset-0 h-full w-full border-0 grayscale contrast-125"
-                            />
-                        ) : (
-                            <a
-                                href={MAPS_URL}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                aria-label="View Noir Bistro on the map (opens in a new tab)"
-                                className="group absolute inset-0 block bg-noir-black focus-visible:outline focus-visible:outline-4 focus-visible:-outline-offset-8 focus-visible:outline-noir-red"
-                            >
-                                {/* Stylised street grid stands in for the live map */}
-                                <svg
-                                    className="absolute inset-0 h-full w-full text-noir-red/30"
-                                    preserveAspectRatio="xMidYMid slice"
-                                    viewBox="0 0 400 300"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="6"
-                                    aria-hidden="true"
-                                >
-                                    <path d="M0 70h400M0 160h400M0 240h400M80 0v300M190 0v300M300 0v300" />
-                                    <path d="M0 300L400 0" strokeWidth="10" />
-                                </svg>
-                                <span
-                                    aria-hidden="true"
-                                    className="absolute left-1/2 top-1/2 grid h-14 w-14 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-noir-red font-anton text-2xl text-noir-black transition-transform duration-300 group-hover:scale-110"
-                                >
-                                    N
-                                </span>
-                            </a>
-                        )}
-                    </div>
-
-                    <div className="flex flex-col justify-between gap-8 p-6 sm:p-10 lg:col-span-5">
-                        <div>
-                            <h3 className="font-anton text-4xl uppercase leading-none sm:text-5xl">
-                                Noir Bistro
-                            </h3>
-                            <p className="mt-4 text-lg leading-relaxed">
-                                {address.join(", ")}
-                            </p>
-                        </div>
-
-                        <a
-                            href={MAPS_URL}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="group inline-flex w-fit items-center gap-3 bg-noir-black px-6 py-4 font-anton text-xl uppercase tracking-wide text-noir-red transition-transform duration-200 hover:-translate-y-1 focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-noir-black sm:text-2xl"
-                        >
-                            Open in Google Maps
-                            <ArrowUpRight />
-                            <span className="sr-only">(opens in a new tab)</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-    );
+const iconProps = {
+  width: 20,
+  height: 20,
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 1.5,
+  strokeLinecap: "square",
+  "aria-hidden": true,
 };
 
-export default LocationSection;
+const PinIcon = () => (
+  <svg {...iconProps}>
+    <path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z" />
+    <circle cx="12" cy="9.5" r="2.5" />
+  </svg>
+);
+
+const ClockIcon = () => (
+  <svg {...iconProps}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 6.5V12l3.5 2.5" />
+  </svg>
+);
+
+const PhoneIcon = () => (
+  <svg {...iconProps}>
+    <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1Z" />
+  </svg>
+);
+
+const MailIcon = () => (
+  <svg {...iconProps}>
+    <rect x="3" y="5" width="18" height="14" />
+    <path d="m3 6 9 7 9-7" />
+  </svg>
+);
+
+/* -------------------------------------------------------------------------- */
+/*  Stylized map card                                                         */
+/* -------------------------------------------------------------------------- */
+
+function StylizedMap() {
+  return (
+    <svg
+      className="absolute inset-0 h-full w-full"
+      viewBox="0 0 600 400"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+    >
+      {/* fine grid */}
+      <g stroke="currentColor" strokeWidth="0.5" className="text-white/10">
+        {Array.from({ length: 31 }).map((_, i) => (
+          <line key={`v${i}`} x1={i * 20} y1="0" x2={i * 20} y2="400" />
+        ))}
+        {Array.from({ length: 21 }).map((_, i) => (
+          <line key={`h${i}`} x1="0" y1={i * 20} x2="600" y2={i * 20} />
+        ))}
+      </g>
+
+      {/* "streets" */}
+      <g
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        className="text-white/25"
+      >
+        <path d="M-10 300 L180 240 L330 262 L610 150" />
+        <path d="M120 -10 L160 140 L250 400" />
+        <path d="M430 -10 L400 120 L470 250 L520 410" />
+        <path d="M-10 90 L210 120 L330 200" strokeDasharray="6 8" />
+      </g>
+
+      {/* contour rings centred on the pin */}
+      <g
+        className="map-rings"
+        fill="none"
+        stroke="currentColor"
+        style={{ transformOrigin: "300px 200px" }}
+      >
+        <circle cx="300" cy="200" r="150" strokeWidth="0.75" className="text-noir-red/20" />
+        <circle cx="300" cy="200" r="105" strokeWidth="0.75" className="text-noir-red/35" />
+        <circle cx="300" cy="200" r="64" strokeWidth="1" className="text-noir-red/60" />
+      </g>
+
+      {/* crosshair ticks */}
+      <g stroke="currentColor" strokeWidth="1" className="text-noir-red">
+        <line x1="300" y1="20" x2="300" y2="50" />
+        <line x1="300" y1="350" x2="300" y2="380" />
+        <line x1="20" y1="200" x2="50" y2="200" />
+        <line x1="550" y1="200" x2="580" y2="200" />
+      </g>
+
+      {/* monogram pin */}
+      <g className="map-pin" style={{ transformOrigin: "300px 200px" }}>
+        <circle cx="300" cy="200" r="38" className="map-pin-disc fill-noir-red" />
+        <circle
+          cx="300"
+          cy="200"
+          r="46"
+          fill="none"
+          strokeWidth="1.5"
+          className="stroke-noir-red"
+        />
+        <text
+          x="300"
+          y="216"
+          textAnchor="middle"
+          fontSize="46"
+          className="font-anton fill-noir-black"
+          style={{ fontFamily: "Anton, sans-serif" }}
+        >
+          N
+        </text>
+      </g>
+    </svg>
+  );
+}
+
+function MapCard({ mapEmbedSrc }) {
+  return (
+    <div className="map-card group relative isolate overflow-hidden border border-noir-red bg-noir-black">
+      <div className="relative aspect-[16/10] w-full">
+        {mapEmbedSrc ? (
+          <iframe
+            title="Noir Bistro location map"
+            src={mapEmbedSrc}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            className="absolute inset-0 h-full w-full border-0 grayscale contrast-125 invert-[0.92] hue-rotate-180"
+          />
+        ) : (
+          <StylizedMap />
+        )}
+
+        {/* corner brackets */}
+        {["top-3 left-3 border-t border-l", "top-3 right-3 border-t border-r", "bottom-3 left-3 border-b border-l", "bottom-3 right-3 border-b border-r"].map(
+          (pos) => (
+            <span
+              key={pos}
+              aria-hidden="true"
+              className={`pointer-events-none absolute h-5 w-5 border-noir-red ${pos}`}
+            />
+          )
+        )}
+      </div>
+
+      <a
+        href={MAPS_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="font-anton flex items-center justify-between gap-4 border-t border-noir-red bg-noir-red px-6 py-5 text-lg uppercase tracking-[0.12em] text-noir-black transition-colors duration-300 hover:bg-noir-black hover:text-noir-red focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-6px] focus-visible:outline-white sm:text-xl"
+      >
+        <span>OPEN IN GOOGLE MAPS ↗</span>
+      </a>
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Section                                                                   */
+/* -------------------------------------------------------------------------- */
+
+export default function LocationSection({
+  imageSrc = "/images/noir-hero.jpg",
+  imageAlt = "Interior of Noir Bistro in Alibag",
+  mapEmbedSrc = "",
+}) {
+  const root = useRef(null);
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+
+      mm.add(
+        {
+          reduce: "(prefers-reduced-motion: reduce)",
+          desktop: "(min-width: 1024px)",
+          mobile: "(max-width: 1023px)",
+        },
+        (ctx) => {
+          const { reduce, desktop } = ctx.conditions;
+          if (reduce) return; // content stays fully visible, no motion
+
+          /* 1. Entrance sequence: headline -> photo mask -> frame -> badge */
+          const tl = gsap.timeline({
+            defaults: { ease: "power3.out" },
+            scrollTrigger: {
+              trigger: ".loc-top",
+              start: "top 80%",
+              once: true,
+            },
+          });
+
+          tl.fromTo(
+            ".loc-line > span",
+            { yPercent: 110 },
+            { yPercent: 0, duration: 1, ease: "power4.out", stagger: 0.14 }
+          )
+            .fromTo(
+              ".loc-photo-mask",
+              { clipPath: "inset(0% 0% 100% 0%)" },
+              { clipPath: "inset(0% 0% 0% 0%)", duration: 1.2, ease: "power3.inOut" },
+              "-=0.55"
+            )
+            .fromTo(
+              ".loc-photo-img",
+              { scale: 1.28 },
+              { scale: 1.12, duration: 1.6 },
+              "<"
+            )
+            .fromTo(
+              ".loc-frame",
+              { x: 24, y: -24, opacity: 0 },
+              { x: 0, y: 0, opacity: 1, duration: 0.8 },
+              "-=0.6"
+            )
+            .fromTo(
+              ".loc-badge",
+              { yPercent: 100, opacity: 0 },
+              { yPercent: 0, opacity: 1, duration: 0.7, ease: "back.out(1.4)" },
+              "-=0.4"
+            );
+
+          /* 3. Parallax on the photo (-5% to 5%) --------------------------- */
+          gsap.fromTo(
+            ".loc-photo-img",
+            { yPercent: -5 },
+            {
+              yPercent: 5,
+              ease: "none",
+              scrollTrigger: {
+                trigger: ".loc-photo",
+                start: "top bottom",
+                end: "bottom top",
+                scrub: 0.6,
+              },
+            }
+          );
+
+          /* 4. Schedule + details: rows slide up under their masks --------- */
+          gsap.fromTo(
+            ".loc-row > span, .loc-row > a",
+            { yPercent: 110 },
+            {
+              yPercent: 0,
+              duration: 0.9,
+              ease: "power3.out",
+              stagger: 0.07,
+              scrollTrigger: {
+                trigger: ".loc-schedule",
+                start: "top 85%",
+                once: true,
+              },
+            }
+          );
+
+          gsap.fromTo(
+            ".loc-rule",
+            { scaleX: 0, transformOrigin: "left center" },
+            {
+              scaleX: 1,
+              duration: 1,
+              ease: "power3.inOut",
+              stagger: 0.1,
+              scrollTrigger: {
+                trigger: ".loc-schedule",
+                start: "top 85%",
+                once: true,
+              },
+            }
+          );
+
+          /* 5. Map card: clip-path reveal ---------------------------------- */
+          gsap.fromTo(
+            ".map-card",
+            { clipPath: "inset(0% 0% 100% 0%)" },
+            {
+              clipPath: "inset(0% 0% 0% 0%)",
+              duration: 1.2,
+              ease: "power3.inOut",
+              scrollTrigger: {
+                trigger: ".map-card",
+                start: "top 85%",
+                once: true,
+              },
+            }
+          );
+
+          /* Desktop only: oversized background word drifts against scroll */
+          if (desktop) {
+            gsap.fromTo(
+              ".loc-ghost",
+              { yPercent: 8 },
+              {
+                yPercent: -8,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: root.current,
+                  start: "top bottom",
+                  end: "bottom top",
+                  scrub: true,
+                },
+              }
+            );
+          }
+
+          // Cleanup: strip inline styles so layout returns to normal when the
+          // media query changes or the component unmounts.
+          return () => {
+            gsap.set(
+              [
+                ".loc-line > span",
+                ".loc-photo-mask",
+                ".loc-photo-img",
+                ".loc-frame",
+                ".loc-badge",
+                ".loc-row > span",
+                ".loc-row > a",
+                ".loc-rule",
+                ".map-card",
+                ".loc-ghost",
+              ],
+              { clearProps: "all" }
+            );
+          };
+        }
+      );
+
+      return () => mm.revert();
+    },
+    { scope: root }
+  );
+
+  return (
+    <section
+      ref={root}
+      id="location"
+      aria-labelledby="location-heading"
+      className="relative overflow-hidden bg-noir-black py-24 text-white sm:py-32 lg:py-40"
+    >
+      {/* Ghost word, architectural backdrop */}
+      <span
+        aria-hidden="true"
+        className="loc-ghost font-anton pointer-events-none absolute -right-6 top-24 select-none text-[34vw] leading-none text-transparent lg:text-[26vw]"
+        style={{ WebkitTextStroke: "1px rgb(255 255 255 / 0.06)" }}
+      >
+        N
+      </span>
+
+      <div className="relative mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
+        {/* Row 1: stacked headline + framed photo, side by side, no overlap */}
+        <div className="loc-top grid grid-cols-12 items-end gap-x-10 gap-y-16">
+          {/* Headline: two lines, same scale, second line indented and red */}
+          <h2
+            id="location-heading"
+            className="loc-headline font-anton col-span-12 uppercase leading-[0.9] tracking-tight lg:col-span-6"
+          >
+            <span className="block overflow-hidden pb-[0.08em]">
+              <span className="loc-line block text-[clamp(3.5rem,8vw,7.5rem)] text-white">
+                <span className="inline-block will-change-transform">FIND US</span>
+              </span>
+            </span>
+            <span className="block overflow-hidden pb-[0.08em] pl-[10%]">
+              <span className="loc-line block text-[clamp(3.5rem,8vw,7.5rem)] text-noir-red">
+                <span className="inline-block will-change-transform">COME ON IN</span>
+              </span>
+            </span>
+          </h2>
+
+          {/* Framed venue photo, tucked beside the headline */}
+          <figure className="loc-photo relative col-span-12 mr-5 sm:mr-6 lg:col-span-6 xl:col-span-5 xl:col-start-8">
+            {/* offset frame sits behind and to the lower-left */}
+            <span
+              aria-hidden="true"
+              className="loc-frame absolute -bottom-5 -left-5 right-5 top-5 border border-noir-red sm:-bottom-6 sm:-left-6 sm:right-6 sm:top-6"
+            />
+            <div className="loc-photo-mask relative aspect-[4/3] overflow-hidden bg-neutral-900">
+              <img
+                src={imageSrc}
+                alt={imageAlt}
+                loading="lazy"
+                className="loc-photo-img absolute inset-0 h-full w-full scale-[1.12] object-cover will-change-transform"
+              />
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 bg-gradient-to-t from-noir-black/60 via-transparent to-transparent"
+              />
+            </div>
+
+            {/* badge settles onto the frame's lower-left corner */}
+            <div className="absolute -bottom-5 left-6 z-10 overflow-hidden sm:-bottom-6 sm:left-8">
+              <figcaption className="loc-badge font-anton border border-noir-red bg-noir-black px-4 py-2 text-sm uppercase tracking-[0.2em] text-noir-red sm:text-base">
+                Alibag, Raigad
+              </figcaption>
+            </div>
+          </figure>
+        </div>
+
+        {/* Row 2: address, schedule, contact | map */}
+        <div className="mt-28 grid grid-cols-12 gap-y-16 lg:mt-32 lg:gap-x-10">
+          {/* Info column */}
+          <div className="loc-schedule col-span-12 lg:col-span-6 xl:col-span-5">
+            {/* Address */}
+            <div className="border-l-4 border-noir-red pl-6">
+              <h3 className="font-anton flex items-center gap-3 text-2xl uppercase tracking-wide text-noir-red sm:text-3xl">
+                <PinIcon />
+                Address
+              </h3>
+              <address className="mt-5 not-italic">
+                {ADDRESS_LINES.map((line) => (
+                  <p
+                    key={line}
+                    className="font-anton text-xl uppercase leading-snug tracking-wide text-white sm:text-2xl"
+                  >
+                    {line}
+                  </p>
+                ))}
+              </address>
+            </div>
+
+            {/* Opening hours: editorial schedule */}
+            <div className="mt-14 border-l-4 border-noir-red pl-6">
+              <h3 className="font-anton flex items-center gap-3 text-2xl uppercase tracking-wide text-noir-red sm:text-3xl">
+                <ClockIcon />
+                Opening Hours
+              </h3>
+
+              <dl className="mt-6">
+                <span className="loc-rule block h-px w-full bg-noir-red" />
+                {HOURS.map(({ day, time }) => (
+                  <div key={day}>
+                    <div className="loc-row grid grid-cols-1 gap-x-6 gap-y-1 py-4 sm:grid-cols-[1fr_auto] sm:items-baseline">
+                      <div className="overflow-hidden">
+                        <dt className="font-anton text-lg uppercase tracking-wide text-white sm:text-xl">
+                          <span className="inline-block">{day}</span>
+                        </dt>
+                      </div>
+                      <div className="overflow-hidden">
+                        <dd className="font-anton text-lg uppercase tracking-wide text-noir-red sm:text-xl sm:text-right">
+                          <span className="inline-block">{time}</span>
+                        </dd>
+                      </div>
+                    </div>
+                    <span className="loc-rule block h-px w-full bg-white/20" />
+                  </div>
+                ))}
+              </dl>
+            </div>
+
+            {/* Contact */}
+            <div className="mt-14 border-l-4 border-noir-red pl-6">
+              <h3 className="font-anton text-2xl uppercase tracking-wide text-noir-red sm:text-3xl">
+                Reservations
+              </h3>
+              <ul className="mt-5 space-y-3">
+                <li className="loc-row overflow-hidden">
+                  <a
+                    href={`tel:${PHONE.replace(/\s/g, "")}`}
+                    className="font-anton inline-flex items-center gap-3 text-xl uppercase tracking-wide text-white transition-colors duration-300 hover:text-noir-red focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-noir-red sm:text-2xl"
+                  >
+                    <span className="text-noir-red">
+                      <PhoneIcon />
+                    </span>
+                    {PHONE}
+                  </a>
+                </li>
+                <li className="loc-row overflow-hidden">
+                  <a
+                    href={`mailto:${EMAIL}`}
+                    className="font-anton inline-flex items-center gap-3 break-all text-xl tracking-wide text-white transition-colors duration-300 hover:text-noir-red focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-noir-red sm:text-2xl"
+                  >
+                    <span className="text-noir-red">
+                      <MailIcon />
+                    </span>
+                    {EMAIL}
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Map column, nudged up to overlap the photo on desktop */}
+          <div className="col-span-12 lg:col-span-6 lg:col-start-7 xl:col-span-6 xl:col-start-7 relative z-10">
+            <MapCard mapEmbedSrc={mapEmbedSrc} />
+          </div>
+        </div>
+      </div>
+
+      {/* Hover behaviour for the SVG pin, scoped to this component */}
+      <style>{`
+        .map-card .map-pin,
+        .map-card .map-rings {
+          transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .map-card .map-pin-disc {
+          transition: fill 0.3s ease;
+        }
+        .map-card:hover .map-pin { transform: scale(1.14); }
+        .map-card:hover .map-rings { transform: scale(1.08); }
+        @media (prefers-reduced-motion: reduce) {
+          .map-card .map-pin,
+          .map-card .map-rings { transition: none; }
+        }
+      `}</style>
+    </section>
+  );
+}

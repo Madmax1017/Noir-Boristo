@@ -841,11 +841,11 @@ export default function CafeMenu({ topOffset = 0 }) {
             ref={rootRef}
             className="overflow-x-clip bg-noir-red text-noir-black"
         >
-            {/* Hero */}
-            <header className="mx-auto max-w-7xl px-5 pb-12 pt-20 sm:px-10 sm:pb-16 sm:pt-28">
-                <div className="grid items-center gap-14 lg:grid-cols-12 lg:gap-10">
-                    <div className="lg:col-span-7">
-                        <h1 className="font-anton text-[clamp(4.5rem,15vw,13rem)] uppercase leading-[0.82]">
+        {/* Hero */}
+        <header className="mx-auto max-w-7xl px-5 pb-12 pt-20 sm:px-10 sm:pb-16 sm:pt-28">
+                <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-8">
+                    <div className="lg:col-span-8">
+                        <h1 className="font-anton text-[clamp(3.5rem,11vw,10rem)] uppercase leading-[0.82]">
                             <span className="block overflow-hidden pb-[0.04em]">
                                 <span data-hero-line className="block">
                                     Continental
@@ -872,10 +872,10 @@ export default function CafeMenu({ topOffset = 0 }) {
                         </ul>
                     </div>
 
-                    <div className="lg:col-span-5">
+                    <div className="lg:col-span-4">
                         <div
                             data-hero-ring
-                            className="relative mx-auto w-[min(72vw,26rem)]"
+                            className="relative mx-auto w-[min(72vw,24rem)]"
                         >
                             <Ring
                                 id="ring-hero"
@@ -891,7 +891,6 @@ export default function CafeMenu({ topOffset = 0 }) {
                     </div>
                 </div>
             </header>
-
             {/* Sticky category tabs */}
             <nav
                 ref={navRef}
