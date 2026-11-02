@@ -6,7 +6,7 @@ const MENU_PAGE_URL = "/full-menu";
 
 const navigationLinks = [
     { number: "01", label: "HOME", href: "#home" },
-    { number: "02", label: "THE MENU", href: MENU_PAGE_URL },
+    { number: "02", label: "NOIR MENU", href: MENU_PAGE_URL },
     { number: "03", label: "OUR STORY", href: "#story" },
     { number: "04", label: "FIND US", href: "#location" },
 ];

@@ -3,7 +3,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import "../styles/hero.css";
 
-const LOGO_SRC = "/images/Noir-Bistro-logo.png";
+const LOGO_SRC = "/images/Noir-Bistro-logo-2.png";
 
 // 14 cells: 5 cols x 3 rows, with the centre cell (index 2) spanning 2 rows
 const CELL_COUNT = 14;

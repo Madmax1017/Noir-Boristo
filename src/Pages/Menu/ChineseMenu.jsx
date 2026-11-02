@@ -110,13 +110,6 @@ const chineseMenuData = {
     ],
 };
 
-/* Fonts for item listings. Anton handles headings and prices.
-   Load "Cormorant Garamond" (serif) and "Jost" (sans) on your site;
-   the fallbacks below are used until then. */
-const SERIF =
-    '"Cormorant Garamond", "Playfair Display", "Didot", Georgia, serif';
-const SANS = '"Jost", "Helvetica Neue", Arial, sans-serif';
-
 const PLACEHOLDER = "/images/ambience/placeholder-dish.jpg";
 
 const prefersReducedMotion = () =>
@@ -141,7 +134,6 @@ const Art = ({ children }) => (
     </svg>
 );
 
-/* Soup bowl, steam, chopsticks resting on the rim */
 const SoupBowlArt = () => (
     <Art>
         <path d="M36 50q5-6 0-12t0-12M50 48q5-6 0-12t0-12" />
@@ -152,7 +144,6 @@ const SoupBowlArt = () => (
     </Art>
 );
 
-/* Soup bowl with a spoon and steam */
 const SoupSpoonArt = () => (
     <Art>
         <path d="M34 50q5-6 0-12t0-12M48 48q5-6 0-12t0-12M62 50q5-6 0-12t0-12" />
@@ -164,7 +155,6 @@ const SoupSpoonArt = () => (
     </Art>
 );
 
-/* Pleated dumpling */
 const DumplingArt = () => (
     <Art>
         <path d="M44 22q4-5 0-10t0-10M62 20q4-5 0-10t0-10" />
@@ -174,7 +164,6 @@ const DumplingArt = () => (
     </Art>
 );
 
-/* Chicken drumstick */
 const DrumstickArt = () => (
     <Art>
         <path d="M70 20C94 20 102 46 88 62C76 76 54 72 44 62C34 52 40 28 70 20Z" />
@@ -185,7 +174,6 @@ const DrumstickArt = () => (
     </Art>
 );
 
-/* Takeaway noodle carton with chopsticks */
 const NoodleBoxArt = () => (
     <Art>
         <path d="M30 56H90L82 106H38Z" />
@@ -197,7 +185,6 @@ const NoodleBoxArt = () => (
     </Art>
 );
 
-/* Bowl of noodles lifted by chopsticks */
 const NoodleBowlArt = () => (
     <Art>
         <path d="M46 66C46 46 60 42 60 28M54 66C54 50 68 46 68 32M62 66C62 52 76 48 76 36" />
@@ -207,7 +194,6 @@ const NoodleBowlArt = () => (
     </Art>
 );
 
-/* Rice bowl with a mound of rice */
 const RiceBowlArt = () => (
     <Art>
         <path d="M26 66C30 40 90 40 94 66" />
@@ -218,7 +204,6 @@ const RiceBowlArt = () => (
     </Art>
 );
 
-/* Rice bowl topped with an egg, chopsticks resting on the rim */
 const RiceEggArt = () => (
     <Art>
         <path d="M70 68L108 28M80 70L114 36" />
@@ -300,7 +285,6 @@ const SECTIONS = [
     },
 ];
 
-/* Tabs jump to the first section (the veg list) of each category */
 const TABS = [
     { id: "soups", label: "Soups", target: "soups-veg" },
     { id: "starters", label: "Starters", target: "starters-veg" },
@@ -308,8 +292,6 @@ const TABS = [
     { id: "rice", label: "Rice Bowls", target: "rice-veg" },
 ];
 
-/* Image bands between sections. Circles and arches keep the curved theme.
-   Swap in real photography by adding a `src` to any entry. */
 const BANDS = {
     "soups-nonveg": [
         { alt: "Noir Bistro soup", shape: "circle", className: "w-[min(72vw,24rem)]" },
@@ -332,7 +314,6 @@ const BANDS = {
 
 /* ─────────────────────────── SMALL PARTS ─────────────────────────── */
 
-/* Filled circle = veg, hollow circle = non-veg */
 const Dot = ({ veg }) => (
     <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0" aria-hidden="true">
         <circle
@@ -346,7 +327,6 @@ const Dot = ({ veg }) => (
     </svg>
 );
 
-/* Classic double rule: thick line over a hairline */
 const DoubleRule = () => (
     <div aria-hidden="true">
         <div className="border-t-[3px] border-noir-black" />
@@ -354,7 +334,6 @@ const DoubleRule = () => (
     </div>
 );
 
-/* Text that circles the badge. Rotates with scroll. */
 const Ring = ({ id, text, className = "" }) => (
     <svg
         data-ring
@@ -396,8 +375,8 @@ const FramedImage = ({
         <figure
             data-circle
             className={`relative shrink-0 overflow-hidden border-[3px] border-noir-black bg-noir-black/10 ${isArch
-                ? "aspect-[3/4] rounded-t-full rounded-b-[2rem]"
-                : "aspect-square rounded-full"
+                    ? "aspect-[3/4] rounded-t-full rounded-b-[2rem]"
+                    : "aspect-square rounded-full"
                 } ${className}`}
         >
             {failed ? (
@@ -435,8 +414,7 @@ const Price = ({ value }) => {
             </span>
             {suffix !== undefined && (
                 <span
-                    style={{ fontFamily: SANS }}
-                    className="ml-0.5 text-sm font-medium"
+                    className="ml-0.5 font-anton text-sm font-medium"
                 >
                     /{suffix}
                 </span>
@@ -444,6 +422,9 @@ const Price = ({ value }) => {
         </span>
     );
 };
+
+const itemNameClass =
+    "text-lg font-anton uppercase tracking-[0.05em] sm:text-xl";
 
 const ItemList = ({ items }) => (
     <ul>
@@ -453,10 +434,7 @@ const ItemList = ({ items }) => (
                 data-item
                 className="grid grid-cols-[1fr_auto] items-baseline gap-x-6 border-b border-noir-black/30 py-4"
             >
-                <span
-                    style={{ fontFamily: SERIF }}
-                    className="text-lg font-semibold uppercase leading-snug tracking-[0.05em] sm:text-xl"
-                >
+                <span className={itemNameClass}>
                     {item.name}
                 </span>
                 <Price value={item.price} />
@@ -493,8 +471,8 @@ const CategoryBadge = ({ section }) => {
                 <h2
                     id={`chinese-${id}-title`}
                     className={`mt-1 text-center font-anton uppercase leading-[0.9] ${longTitle
-                        ? "text-[clamp(2.5rem,6vw,4.25rem)]"
-                        : "text-[clamp(2.75rem,7vw,5rem)]"
+                            ? "text-[clamp(2.5rem,6vw,4.25rem)]"
+                            : "text-[clamp(2.75rem,7vw,5rem)]"
                         }`}
                 >
                     <span className="block overflow-hidden pb-[0.05em]">
@@ -508,8 +486,7 @@ const CategoryBadge = ({ section }) => {
                 <p
                     data-fade
                     aria-hidden="true"
-                    style={{ fontFamily: SERIF }}
-                    className="flex items-center gap-2 text-xl font-semibold italic"
+                    className="flex items-center gap-2 font-anton text-xl font-semibold uppercase tracking-wider"
                 >
                     <Dot veg={veg} />
                     {veg ? "Veg" : "Non-veg"}
@@ -521,25 +498,20 @@ const CategoryBadge = ({ section }) => {
 
 /* ───────────────────────────── COMPONENT ───────────────────────────── */
 
-/**
- * topOffset: combined height (px) of anything fixed above the menu
- * (site navbar, MenuSection toggle bar). The category tabs stick below it.
- */
 export default function ChineseMenu({ topOffset = 0 }) {
     const rootRef = useRef(null);
     const navRef = useRef(null);
     const tabsRef = useRef(null);
     const indicatorRef = useRef(null);
     const tabRefs = useRef({});
-    const lockRef = useRef(false); // true while a tab click is scrolling the page
+    const lockRef = useRef(false);
     const indicatorReadyRef = useRef(false);
 
-    const [active, setActive] = useState(TABS[0].id); // active category
+    const [active, setActive] = useState(TABS[0].id);
     const [navHeight, setNavHeight] = useState(0);
     const activeRef = useRef(active);
     activeRef.current = active;
 
-    /* Measure the tab bar so each sticky badge sits just below it */
     useEffect(() => {
         const nav = navRef.current;
         if (!nav) return;
@@ -565,13 +537,11 @@ export default function ChineseMenu({ topOffset = 0 }) {
         }
     };
 
-    /* ── Reveals, scroll tracking, progress bar ── */
     const { contextSafe } = useGSAP(
         () => {
             const root = rootRef.current;
             const mm = gsap.matchMedia();
 
-            // Which section is on screen drives the active tab
             gsap.utils.toArray("[data-section]").forEach((el) => {
                 ScrollTrigger.create({
                     trigger: el,
@@ -586,7 +556,6 @@ export default function ChineseMenu({ topOffset = 0 }) {
             });
 
             mm.add("(prefers-reduced-motion: no-preference)", () => {
-                /* Hero */
                 gsap.timeline({ defaults: { ease: "power4.out" } })
                     .from("[data-hero-line]", {
                         yPercent: 115,
@@ -604,7 +573,6 @@ export default function ChineseMenu({ topOffset = 0 }) {
                         "-=0.6"
                     );
 
-                /* Page scroll progress under the tabs */
                 gsap.fromTo(
                     "[data-progress]",
                     { scaleX: 0 },
@@ -620,8 +588,6 @@ export default function ChineseMenu({ topOffset = 0 }) {
                     }
                 );
 
-                /* Category badges: circle scales in, line art draws itself,
-                   title slides up */
                 gsap.utils.toArray("[data-section]").forEach((sec) => {
                     const badge = sec.querySelector("[data-badge]");
                     const ring = sec.querySelector("[data-ring]");
@@ -630,7 +596,6 @@ export default function ChineseMenu({ topOffset = 0 }) {
                         ? Array.from(art.querySelectorAll("path,circle,ellipse"))
                         : [];
 
-                    // Hide the drawing until the section is reached
                     gsap.set(strokes, {
                         strokeDasharray: (i, el) => el.getTotalLength(),
                         strokeDashoffset: (i, el) => el.getTotalLength(),
@@ -679,7 +644,6 @@ export default function ChineseMenu({ topOffset = 0 }) {
                         );
                 });
 
-                /* Rings turn slowly as you scroll */
                 gsap.utils.toArray("[data-ring]").forEach((ring) => {
                     gsap.to(ring, {
                         rotation: 140,
@@ -693,7 +657,6 @@ export default function ChineseMenu({ topOffset = 0 }) {
                     });
                 });
 
-                /* Menu rows stagger in as each group scrolls into view */
                 gsap.utils.toArray("[data-group]").forEach((group) => {
                     gsap
                         .timeline({
@@ -722,7 +685,6 @@ export default function ChineseMenu({ topOffset = 0 }) {
                         );
                 });
 
-                /* Circular images: iris reveal + gentle parallax */
                 gsap.utils.toArray("[data-circle]").forEach((fig) => {
                     gsap.fromTo(
                         fig,
@@ -760,7 +722,6 @@ export default function ChineseMenu({ topOffset = 0 }) {
                 });
             });
 
-            // Keep the tab highlight aligned after fonts load / resize
             placeIndicator(false);
             document.fonts?.ready.then(() => placeIndicator(false));
             const onResize = () => placeIndicator(false);
@@ -774,7 +735,6 @@ export default function ChineseMenu({ topOffset = 0 }) {
         { scope: rootRef }
     );
 
-    /* ── Active tab: slide the highlight and keep the tab in view ── */
     useGSAP(
         () => {
             const tab = tabRefs.current[active];
@@ -792,7 +752,6 @@ export default function ChineseMenu({ topOffset = 0 }) {
         { scope: rootRef, dependencies: [active] }
     );
 
-    /* ── Tab click: smooth scroll to the category's first section ── */
     const goToSection = contextSafe((tab) => {
         const el = document.getElementById(`chinese-${tab.target}`);
         if (!el) return;
@@ -846,8 +805,7 @@ export default function ChineseMenu({ topOffset = 0 }) {
                         </h1>
 
                         <ul
-                            style={{ fontFamily: SANS }}
-                            className="mt-8 flex flex-wrap gap-x-8 gap-y-3 text-base font-medium"
+                            className="mt-8 flex flex-wrap gap-x-8 gap-y-3 font-anton text-base font-medium uppercase tracking-wider"
                         >
                             <li data-hero-fade className="flex items-center gap-2">
                                 <Dot veg />
@@ -907,8 +865,8 @@ export default function ChineseMenu({ topOffset = 0 }) {
                             onClick={() => goToSection(tab)}
                             aria-current={active === tab.id ? "true" : undefined}
                             className={`relative z-10 shrink-0 rounded-full px-5 py-2 font-anton text-lg uppercase tracking-wide transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-noir-black sm:text-xl ${active === tab.id
-                                ? "text-noir-red"
-                                : "text-noir-black hover:bg-noir-black/10"
+                                    ? "text-noir-red"
+                                    : "text-noir-black hover:bg-noir-black/10"
                                 }`}
                         >
                             {tab.label}

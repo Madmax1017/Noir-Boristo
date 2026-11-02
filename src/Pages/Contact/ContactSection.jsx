@@ -196,7 +196,7 @@ export default function ContactSection() {
           <div className="lg:col-span-4">
             <img
               ref={graphicRef}
-              src="/images/Noir-Bistro-logo.png"
+              src="/images/Noir-Bistro-logo-2.png"
               alt="Noir Bistro"
               className="h-28 md:h-36 w-auto object-contain"
             />

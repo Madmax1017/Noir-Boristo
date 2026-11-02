@@ -38,7 +38,7 @@ const cafeMenuData = {
         { name: "CORN CHEESE MELT", price: "119/-" },
         { name: "NOIR VEG GRILL", price: "129/-" },
         { name: "PANEER TIKKI GRILL", price: "139/-" },
-        { name: "VEG COLESLAW MELT", price: "139/-" },
+        { name: "VEG COLESLAW MELT", price: "129/-" },
     ],
     grillsNonVegSandwiches: [
         { name: "NOIR CHICKEN GRILL", price: "149/-" },
@@ -104,13 +104,6 @@ const cafeMenuData = {
         { name: "RED VELVET LAVA", price: "110/-" },
     ],
 };
-
-/* Fonts for item listings. Anton handles headings and prices.
-   Load "Cormorant Garamond" (serif) and "Jost" (sans) on your site;
-   the fallbacks below are used until then. */
-const SERIF =
-    '"Cormorant Garamond", "Playfair Display", "Didot", Georgia, serif';
-const SANS = '"Jost", "Helvetica Neue", Arial, sans-serif';
 
 const SIZES = [
     { key: "p", short: "P", label: "Personal" },
@@ -303,8 +296,6 @@ const SECTIONS = [
     },
 ];
 
-/* Image bands between sections. Circles and arches keep the curved theme.
-   Swap `src` for real photography. */
 const BANDS = {
     stacks: [
         { alt: "Noir Bistro burger", shape: "circle", className: "w-[min(72vw,24rem)]" },
@@ -323,7 +314,6 @@ const BANDS = {
 
 /* ─────────────────────────── SMALL PARTS ─────────────────────────── */
 
-/* Filled circle = veg, hollow circle = non-veg */
 const Dot = ({ veg }) => (
     <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0" aria-hidden="true">
         <circle
@@ -337,7 +327,6 @@ const Dot = ({ veg }) => (
     </svg>
 );
 
-/* Classic double rule: thick line over a hairline */
 const DoubleRule = () => (
     <div aria-hidden="true">
         <div className="border-t-[3px] border-noir-black" />
@@ -345,7 +334,6 @@ const DoubleRule = () => (
     </div>
 );
 
-/* Text that circles the badge. Rotates with scroll. */
 const Ring = ({ id, text, className = "" }) => (
     <svg
         data-ring
@@ -372,7 +360,7 @@ const Ring = ({ id, text, className = "" }) => (
     </svg>
 );
 
-const RING_TEXT = "NOIR BISTRO • CAFE MENU • ".repeat(3);
+const RING_TEXT = "NOIR BISTRO • CONTINENTAL MENU • ".repeat(3);
 
 const FramedImage = ({
     src = PLACEHOLDER,
@@ -387,8 +375,8 @@ const FramedImage = ({
         <figure
             data-circle
             className={`relative shrink-0 overflow-hidden border-[3px] border-noir-black bg-noir-black/10 ${isArch
-                ? "aspect-[3/4] rounded-t-full rounded-b-[2rem]"
-                : "aspect-square rounded-full"
+                    ? "aspect-[3/4] rounded-t-full rounded-b-[2rem]"
+                    : "aspect-square rounded-full"
                 } ${className}`}
         >
             {failed ? (
@@ -426,8 +414,7 @@ const Price = ({ value }) => {
             </span>
             {suffix !== undefined && (
                 <span
-                    style={{ fontFamily: SANS }}
-                    className="ml-0.5 text-sm font-medium"
+                    className="ml-0.5 font-anton text-sm font-medium"
                 >
                     /{suffix}
                 </span>
@@ -437,7 +424,7 @@ const Price = ({ value }) => {
 };
 
 const itemNameClass =
-    "text-lg font-semibold uppercase leading-snug tracking-[0.05em] sm:text-xl";
+    "text-lg font-anton uppercase tracking-[0.05em] sm:text-xl";
 
 const ItemList = ({ items }) => (
     <ul>
@@ -447,7 +434,7 @@ const ItemList = ({ items }) => (
                 data-item
                 className="grid grid-cols-[1fr_auto] items-baseline gap-x-6 border-b border-noir-black/30 py-4"
             >
-                <span style={{ fontFamily: SERIF }} className={itemNameClass}>
+                <span className={itemNameClass}>
                     {item.name}
                 </span>
                 <Price value={item.price} />
@@ -470,7 +457,7 @@ const SizeTable = ({ caption, items }) => (
     <table className="w-full border-collapse text-left">
         <caption className="sr-only">{caption}</caption>
         <thead>
-            <tr style={{ fontFamily: SANS }} className="text-sm font-medium">
+            <tr className="font-anton text-sm font-medium">
                 <th scope="col" className="py-2 pr-2">
                     <span className="sr-only">Pizza</span>
                 </th>
@@ -478,7 +465,7 @@ const SizeTable = ({ caption, items }) => (
                     <th
                         key={s.key}
                         scope="col"
-                        className="w-14 py-2 text-right font-medium sm:w-24"
+                        className="w-14 py-2 text-right font-anton font-medium sm:w-24"
                     >
                         <span aria-hidden="true" className="sm:hidden">
                             {s.short}
@@ -497,7 +484,6 @@ const SizeTable = ({ caption, items }) => (
                 >
                     <th
                         scope="row"
-                        style={{ fontFamily: SERIF }}
                         className={`py-4 pr-2 text-left ${itemNameClass}`}
                     >
                         {item.name}
@@ -554,8 +540,7 @@ const CategoryBadge = ({ section }) => {
                 {subtitle && (
                     <p
                         data-fade
-                        style={{ fontFamily: SERIF }}
-                        className="text-xl font-semibold italic"
+                        className="font-anton text-xl font-semibold uppercase tracking-wider"
                     >
                         {subtitle}
                     </p>
@@ -567,17 +552,13 @@ const CategoryBadge = ({ section }) => {
 
 /* ───────────────────────────── COMPONENT ───────────────────────────── */
 
-/**
- * topOffset: combined height (px) of anything fixed above the menu
- * (site navbar, MenuSection toggle bar). The category tabs stick below it.
- */
 export default function CafeMenu({ topOffset = 0 }) {
     const rootRef = useRef(null);
     const navRef = useRef(null);
     const tabsRef = useRef(null);
     const indicatorRef = useRef(null);
     const tabRefs = useRef({});
-    const lockRef = useRef(false); // true while a tab click is scrolling the page
+    const lockRef = useRef(false);
     const indicatorReadyRef = useRef(false);
 
     const [active, setActive] = useState(SECTIONS[0].id);
@@ -585,7 +566,6 @@ export default function CafeMenu({ topOffset = 0 }) {
     const activeRef = useRef(active);
     activeRef.current = active;
 
-    /* Measure the tab bar so each sticky badge sits just below it */
     useEffect(() => {
         const nav = navRef.current;
         if (!nav) return;
@@ -611,13 +591,11 @@ export default function CafeMenu({ topOffset = 0 }) {
         }
     };
 
-    /* ── Reveals, scroll tracking, progress bar ── */
     const { contextSafe } = useGSAP(
         () => {
             const root = rootRef.current;
             const mm = gsap.matchMedia();
 
-            // Which section is on screen drives the active tab
             gsap.utils.toArray("[data-section]").forEach((el) => {
                 ScrollTrigger.create({
                     trigger: el,
@@ -632,7 +610,6 @@ export default function CafeMenu({ topOffset = 0 }) {
             });
 
             mm.add("(prefers-reduced-motion: no-preference)", () => {
-                /* Hero */
                 gsap.timeline({ defaults: { ease: "power4.out" } })
                     .from("[data-hero-line]", {
                         yPercent: 115,
@@ -650,7 +627,6 @@ export default function CafeMenu({ topOffset = 0 }) {
                         "-=0.6"
                     );
 
-                /* Page scroll progress under the tabs */
                 gsap.fromTo(
                     "[data-progress]",
                     { scaleX: 0 },
@@ -666,8 +642,6 @@ export default function CafeMenu({ topOffset = 0 }) {
                     }
                 );
 
-                /* Category badges: circle scales in, line art draws itself,
-                   title slides up */
                 gsap.utils.toArray("[data-section]").forEach((sec) => {
                     const badge = sec.querySelector("[data-badge]");
                     const ring = sec.querySelector("[data-ring]");
@@ -676,7 +650,6 @@ export default function CafeMenu({ topOffset = 0 }) {
                         ? Array.from(art.querySelectorAll("path,circle,ellipse"))
                         : [];
 
-                    // Hide the drawing until the section is reached
                     gsap.set(strokes, {
                         strokeDasharray: (i, el) => el.getTotalLength(),
                         strokeDashoffset: (i, el) => el.getTotalLength(),
@@ -725,7 +698,6 @@ export default function CafeMenu({ topOffset = 0 }) {
                         );
                 });
 
-                /* Rings turn slowly as you scroll */
                 gsap.utils.toArray("[data-ring]").forEach((ring) => {
                     gsap.to(ring, {
                         rotation: 140,
@@ -739,7 +711,6 @@ export default function CafeMenu({ topOffset = 0 }) {
                     });
                 });
 
-                /* Menu rows stagger in as each group scrolls into view */
                 gsap.utils.toArray("[data-group]").forEach((group) => {
                     gsap
                         .timeline({
@@ -768,7 +739,6 @@ export default function CafeMenu({ topOffset = 0 }) {
                         );
                 });
 
-                /* Circular images: iris reveal + gentle parallax */
                 gsap.utils.toArray("[data-circle]").forEach((fig) => {
                     gsap.fromTo(
                         fig,
@@ -806,7 +776,6 @@ export default function CafeMenu({ topOffset = 0 }) {
                 });
             });
 
-            // Keep the tab highlight aligned after fonts load / resize
             placeIndicator(false);
             document.fonts?.ready.then(() => placeIndicator(false));
             const onResize = () => placeIndicator(false);
@@ -820,7 +789,6 @@ export default function CafeMenu({ topOffset = 0 }) {
         { scope: rootRef }
     );
 
-    /* ── Active tab: slide the highlight and keep the tab in view ── */
     useGSAP(
         () => {
             const tab = tabRefs.current[active];
@@ -838,7 +806,6 @@ export default function CafeMenu({ topOffset = 0 }) {
         { scope: rootRef, dependencies: [active] }
     );
 
-    /* ── Tab click: smooth scroll to the section ── */
     const goToSection = contextSafe((id) => {
         const el = document.getElementById(`cafe-${id}`);
         if (!el) return;
@@ -878,10 +845,10 @@ export default function CafeMenu({ topOffset = 0 }) {
             <header className="mx-auto max-w-7xl px-5 pb-12 pt-20 sm:px-10 sm:pb-16 sm:pt-28">
                 <div className="grid items-center gap-14 lg:grid-cols-12 lg:gap-10">
                     <div className="lg:col-span-7">
-                        <h1 className="font-anton text-[clamp(5.5rem,20vw,16rem)] uppercase leading-[0.82]">
+                        <h1 className="font-anton text-[clamp(4.5rem,15vw,13rem)] uppercase leading-[0.82]">
                             <span className="block overflow-hidden pb-[0.04em]">
                                 <span data-hero-line className="block">
-                                    Cafe
+                                    Continental
                                 </span>
                             </span>
                             <span className="block overflow-hidden pb-[0.04em]">
@@ -892,8 +859,7 @@ export default function CafeMenu({ topOffset = 0 }) {
                         </h1>
 
                         <ul
-                            style={{ fontFamily: SANS }}
-                            className="mt-8 flex flex-wrap gap-x-8 gap-y-3 text-base font-medium"
+                            className="mt-8 flex flex-wrap gap-x-8 gap-y-3 font-anton text-base font-medium uppercase tracking-wider"
                         >
                             <li data-hero-fade className="flex items-center gap-2">
                                 <Dot veg />
@@ -953,8 +919,8 @@ export default function CafeMenu({ topOffset = 0 }) {
                             onClick={() => goToSection(s.id)}
                             aria-current={active === s.id ? "true" : undefined}
                             className={`relative z-10 shrink-0 rounded-full px-5 py-2 font-anton text-lg uppercase tracking-wide transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-noir-black sm:text-xl ${active === s.id
-                                ? "text-noir-red"
-                                : "text-noir-black hover:bg-noir-black/10"
+                                    ? "text-noir-red"
+                                    : "text-noir-black hover:bg-noir-black/10"
                                 }`}
                         >
                             {s.tab}
