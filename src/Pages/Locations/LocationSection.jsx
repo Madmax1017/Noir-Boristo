@@ -79,7 +79,7 @@ function StylizedMap() {
       aria-hidden="true"
     >
       {/* fine grid */}
-      <g stroke="currentColor" strokeWidth="0.5" className="text-white/10">
+      <g stroke="currentColor" strokeWidth="0.5" className="text-noir-red/10">
         {Array.from({ length: 31 }).map((_, i) => (
           <line key={`v${i}`} x1={i * 20} y1="0" x2={i * 20} y2="400" />
         ))}
@@ -93,7 +93,7 @@ function StylizedMap() {
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
-        className="text-white/25"
+        className="text-noir-red/25"
       >
         <path d="M-10 300 L180 240 L330 262 L610 150" />
         <path d="M120 -10 L160 140 L250 400" />
@@ -179,7 +179,7 @@ function MapCard({ mapEmbedSrc }) {
         href={MAPS_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className="font-anton flex items-center justify-between gap-4 border-t border-noir-red bg-noir-red px-6 py-5 text-lg uppercase tracking-[0.12em] text-noir-black transition-colors duration-300 hover:bg-noir-black hover:text-noir-red focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-6px] focus-visible:outline-white sm:text-xl"
+        className="font-anton flex items-center justify-between gap-4 border-t border-noir-red bg-noir-red px-6 py-5 text-lg uppercase tracking-[0.12em] text-noir-black transition-colors duration-300 hover:bg-noir-black hover:text-noir-red focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-6px] focus-visible:outline-noir-red sm:text-xl"
       >
         <span>OPEN IN GOOGLE MAPS ↗</span>
       </a>
@@ -335,8 +335,7 @@ export default function LocationSection({
             );
           }
 
-          // Cleanup: strip inline styles so layout returns to normal when the
-          // media query changes or the component unmounts.
+          // Cleanup
           return () => {
             gsap.set(
               [
@@ -367,13 +366,13 @@ export default function LocationSection({
       ref={root}
       id="location"
       aria-labelledby="location-heading"
-      className="relative overflow-hidden bg-noir-black py-24 text-white sm:py-32 lg:py-40"
+      className="relative overflow-hidden bg-noir-black py-24 text-noir-red sm:py-32 lg:py-40"
     >
       {/* Ghost word, architectural backdrop */}
       <span
         aria-hidden="true"
         className="loc-ghost font-anton pointer-events-none absolute -right-6 top-24 select-none text-[34vw] leading-none text-transparent lg:text-[26vw]"
-        style={{ WebkitTextStroke: "1px rgb(255 255 255 / 0.06)" }}
+        style={{ WebkitTextStroke: "1px rgba(230, 35, 35, 0.1)" }}
       >
         N
       </span>
@@ -381,13 +380,13 @@ export default function LocationSection({
       <div className="relative mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
         {/* Row 1: stacked headline + framed photo, side by side, no overlap */}
         <div className="loc-top grid grid-cols-12 items-end gap-x-10 gap-y-16">
-          {/* Headline: two lines, same scale, second line indented and red */}
+          {/* Headline: two lines, both red */}
           <h2
             id="location-heading"
             className="loc-headline font-anton col-span-12 uppercase leading-[0.9] tracking-tight lg:col-span-6"
           >
             <span className="block overflow-hidden pb-[0.08em]">
-              <span className="loc-line block text-[clamp(3.5rem,8vw,7.5rem)] text-white">
+              <span className="loc-line block text-[clamp(3.5rem,8vw,7.5rem)] text-noir-red">
                 <span className="inline-block will-change-transform">FIND US</span>
               </span>
             </span>
@@ -441,7 +440,7 @@ export default function LocationSection({
                 {ADDRESS_LINES.map((line) => (
                   <p
                     key={line}
-                    className="font-anton text-xl uppercase leading-snug tracking-wide text-white sm:text-2xl"
+                    className="font-anton text-xl uppercase leading-snug tracking-wide text-noir-red sm:text-2xl"
                   >
                     {line}
                   </p>
@@ -462,7 +461,7 @@ export default function LocationSection({
                   <div key={day}>
                     <div className="loc-row grid grid-cols-1 gap-x-6 gap-y-1 py-4 sm:grid-cols-[1fr_auto] sm:items-baseline">
                       <div className="overflow-hidden">
-                        <dt className="font-anton text-lg uppercase tracking-wide text-white sm:text-xl">
+                        <dt className="font-anton text-lg uppercase tracking-wide text-noir-red sm:text-xl">
                           <span className="inline-block">{day}</span>
                         </dt>
                       </div>
@@ -472,7 +471,7 @@ export default function LocationSection({
                         </dd>
                       </div>
                     </div>
-                    <span className="loc-rule block h-px w-full bg-white/20" />
+                    <span className="loc-rule block h-px w-full bg-noir-red/30" />
                   </div>
                 ))}
               </dl>
@@ -487,7 +486,7 @@ export default function LocationSection({
                 <li className="loc-row overflow-hidden">
                   <a
                     href={`tel:${PHONE.replace(/\s/g, "")}`}
-                    className="font-anton inline-flex items-center gap-3 text-xl uppercase tracking-wide text-white transition-colors duration-300 hover:text-noir-red focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-noir-red sm:text-2xl"
+                    className="font-anton inline-flex items-center gap-3 text-xl uppercase tracking-wide text-noir-red transition-opacity duration-300 hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-noir-red sm:text-2xl"
                   >
                     <span className="text-noir-red">
                       <PhoneIcon />
@@ -498,7 +497,7 @@ export default function LocationSection({
                 <li className="loc-row overflow-hidden">
                   <a
                     href={`mailto:${EMAIL}`}
-                    className="font-anton inline-flex items-center gap-3 break-all text-xl tracking-wide text-white transition-colors duration-300 hover:text-noir-red focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-noir-red sm:text-2xl"
+                    className="font-anton inline-flex items-center gap-3 break-all text-xl tracking-wide text-noir-red transition-opacity duration-300 hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-noir-red sm:text-2xl"
                   >
                     <span className="text-noir-red">
                       <MailIcon />
@@ -510,14 +509,14 @@ export default function LocationSection({
             </div>
           </div>
 
-          {/* Map column, nudged up to overlap the photo on desktop */}
+          {/* Map column */}
           <div className="col-span-12 lg:col-span-6 lg:col-start-7 xl:col-span-6 xl:col-start-7 relative z-10">
             <MapCard mapEmbedSrc={mapEmbedSrc} />
           </div>
         </div>
       </div>
 
-      {/* Hover behaviour for the SVG pin, scoped to this component */}
+      {/* Hover behaviour for the SVG pin */}
       <style>{`
         .map-card .map-pin,
         .map-card .map-rings {

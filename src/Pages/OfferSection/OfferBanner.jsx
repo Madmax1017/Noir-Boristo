@@ -1,250 +1,257 @@
-import { useCallback, useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
+import { useId, useRef, useState } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import "./offers.css";
 
-gsap.registerPlugin(useGSAP);
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-/**
- * Single source of truth for the Tuesday offers.
- * OfferSection imports this so both components always show the same content.
- */
-export const TUESDAY_OFFERS = [
-    {
-        id: "chinese",
-        headline: "20% OFF",
-        detail: "on any Chinese food",
-        time: "12 AM to 6 PM",
-    },
-    {
-        id: "pizza",
-        headline: "Buy 1 Get 1 Free",
-        detail: "on any pizza",
-        time: "12 AM to 6 PM",
-    },
-];
+const pad = (n) => String(n).padStart(2, "0");
 
-const FOCUSABLE =
-    'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+/* "BUY 1 + GET 1 FREE" -> ["BUY 1 +", "GET 1 FREE"] so it breaks cleanly */
+const splitHighlight = (text) =>
+    text.includes("+")
+        ? text
+            .split(/\s*\+\s*/)
+            .map((part, i, all) => (i < all.length - 1 ? `${part} +` : part))
+        : [text];
 
-const prefersReducedMotion = () =>
-    typeof window !== "undefined" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+/* File names with spaces / brackets are safe to pass straight in */
+const safeSrc = (src) => (src.includes("%") ? src : encodeURI(src));
 
 /**
- * Full-screen Tuesday offers modal.
- * Mount it only while open: {isOpen && <OfferBanner onClose={...} />}
- * It plays its own exit animation, then calls onClose to unmount.
+ * Reusable promo card.
+ *
+ * title        "TUESDAY OFFER!"
+ * subtitle     "12AM TO 6PM"
+ * highlight    "20% OFF" | "BUY 1 + GET 1 FREE"
+ * description  "ANY CHINESE FOOD" | "ANY PIZZA"
+ * imageSrc     photo path
+ * badgeText    text inside the round stamp
+ * index/total  optional counter ("01 / 02")
+ * reverse      mirror the layout (photo on the left)
+ * ctaHref / ctaLabel  optional button
  */
-const OfferBanner = ({ onClose }) => {
-    const panelRef = useRef(null);
-    const closeBtnRef = useRef(null);
-    const tlRef = useRef(null);
-    const closingRef = useRef(false);
-    const onCloseRef = useRef(onClose);
+export default function OfferBanner({
+    title,
+    subtitle,
+    highlight,
+    description,
+    imageSrc,
+    badgeText,
+    index,
+    total,
+    reverse = false,
+    ctaHref = "#full-menu",
+    ctaLabel = "View menu",
+}) {
+    const cardRef = useRef(null);
+    const headingId = useId();
+    const [imgFailed, setImgFailed] = useState(false);
 
-    useEffect(() => {
-        onCloseRef.current = onClose;
-    }, [onClose]);
+    const lines = splitHighlight(highlight);
 
-    /* Entrance timeline. Reversing it is the exit. */
     useGSAP(
         () => {
-            const tl = gsap.timeline({
-                defaults: { ease: "power4.out" },
-                onReverseComplete: () => onCloseRef.current?.(),
-            });
+            const card = cardRef.current;
+            if (!card) return;
 
-            tl.fromTo(
-                panelRef.current,
-                { clipPath: "inset(100% 0% 0% 0%)" },
-                { clipPath: "inset(0% 0% 0% 0%)", duration: 0.85, ease: "expo.inOut" }
-            )
-                .from(
-                    "[data-wm]",
-                    { opacity: 0, yPercent: 14, duration: 1.1, stagger: 0.12 },
-                    "-=0.4"
-                )
-                .from(
-                    "[data-line]",
-                    { yPercent: 110, duration: 0.8, stagger: 0.09 },
-                    "-=0.95"
-                )
-                .from(
-                    "[data-card]",
-                    { y: 70, opacity: 0, duration: 0.8, stagger: 0.14 },
-                    "-=0.55"
-                )
-                .from("[data-chrome]", { opacity: 0, duration: 0.4 }, "-=0.5");
+            const mm = gsap.matchMedia();
 
-            // Near-instant for people who prefer reduced motion.
-            if (prefersReducedMotion()) tl.timeScale(50);
+            mm.add(
+                {
+                    motion: "(prefers-reduced-motion: no-preference)",
+                    desktop: "(min-width: 1024px)",
+                },
+                (context) => {
+                    const { motion, desktop } = context.conditions;
+                    if (!motion) return; // reduced motion: content simply shows
 
-            tlRef.current = tl;
+                    const reveal = card.querySelector("[data-offer-reveal]");
+                    const parallax = card.querySelector("[data-offer-parallax]");
+
+                    /* Entrance: card lifts in, lines slide up out of their masks,
+                       the photo rolls open top to bottom */
+                    gsap
+                        .timeline({
+                            defaults: { ease: "power4.out" },
+                            scrollTrigger: {
+                                trigger: card,
+                                start: "top 75%",
+                                once: true,
+                            },
+                            onComplete: () =>
+                                gsap.set(reveal, { clearProps: "clipPath" }),
+                        })
+                        .from(card, { opacity: 0, y: 60, duration: 1 })
+                        .from(
+                            card.querySelectorAll("[data-offer-line]"),
+                            { yPercent: 110, duration: 1.1, stagger: 0.12 },
+                            0.15
+                        )
+                        .fromTo(
+                            reveal,
+                            { clipPath: "inset(0% 0% 100% 0%)" },
+                            { clipPath: "inset(0% 0% 0% 0%)", duration: 1.6 },
+                            0.2
+                        )
+                        .from(parallax, { scale: 1.3, duration: 1.8 }, "<")
+                        .from(
+                            card.querySelectorAll("[data-offer-badge]"),
+                            {
+                                scale: 0,
+                                rotation: -120,
+                                duration: 1,
+                                ease: "back.out(1.6)",
+                            },
+                            "-=0.9"
+                        )
+                        .from(
+                            card.querySelectorAll("[data-offer-fade]"),
+                            { opacity: 0, y: 20, duration: 0.8, stagger: 0.1 },
+                            0.5
+                        );
+
+                    /* Parallax: the dish drifts inside its frame while scrolling */
+                    if (parallax) {
+                        gsap.fromTo(
+                            parallax,
+                            { yPercent: desktop ? -9 : -6 },
+                            {
+                                yPercent: desktop ? 9 : 6,
+                                ease: "none",
+                                scrollTrigger: {
+                                    trigger: card.querySelector("[data-offer-media]"),
+                                    start: "top bottom",
+                                    end: "bottom top",
+                                    scrub: true,
+                                },
+                            }
+                        );
+                    }
+                }
+            );
+
+            // Reverts every tween and ScrollTrigger made above on unmount
+            return () => mm.revert();
         },
-        { scope: panelRef }
+        { scope: cardRef }
     );
 
-    const requestClose = useCallback(() => {
-        if (closingRef.current) return;
-        closingRef.current = true;
-
-        if (tlRef.current) {
-            tlRef.current.timeScale(prefersReducedMotion() ? 50 : 1.4).reverse();
-        } else {
-            onCloseRef.current?.();
-        }
-    }, []);
-
-    /* ESC to close, Tab focus trap, scroll lock, focus return. */
-    useEffect(() => {
-        const previouslyFocused = document.activeElement;
-        const previousOverflow = document.body.style.overflow;
-        document.body.style.overflow = "hidden";
-        closeBtnRef.current?.focus();
-
-        const onKeyDown = (e) => {
-            if (e.key === "Escape") {
-                e.stopPropagation();
-                requestClose();
-                return;
-            }
-
-            if (e.key === "Tab" && panelRef.current) {
-                const items = panelRef.current.querySelectorAll(FOCUSABLE);
-                if (!items.length) return;
-                const first = items[0];
-                const last = items[items.length - 1];
-
-                if (e.shiftKey && document.activeElement === first) {
-                    e.preventDefault();
-                    last.focus();
-                } else if (!e.shiftKey && document.activeElement === last) {
-                    e.preventDefault();
-                    first.focus();
-                }
-            }
-        };
-
-        document.addEventListener("keydown", onKeyDown);
-
-        return () => {
-            document.removeEventListener("keydown", onKeyDown);
-            document.body.style.overflow = previousOverflow;
-            if (previouslyFocused instanceof HTMLElement) previouslyFocused.focus();
-        };
-    }, [requestClose]);
-
-    return createPortal(
-        <div
-            ref={panelRef}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="offer-banner-title"
-            aria-describedby="offer-banner-desc"
-            className="fixed inset-0 z-[100] overflow-y-auto overflow-x-hidden bg-noir-red text-noir-black"
+    return (
+        <article
+            ref={cardRef}
+            aria-labelledby={headingId}
+            className={`offer-card ${reverse ? "offer-card--reverse" : ""}`}
         >
-            {/* Background watermark poster details (decorative) */}
-            <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 select-none overflow-hidden font-anton uppercase leading-none text-noir-black/10"
-            >
-                <span
-                    data-wm
-                    className="absolute -right-[4vw] -top-[3vw] block rotate-6 text-[34vw]"
-                >
-                    20%
-                </span>
-                <span
-                    data-wm
-                    className="absolute -left-[3vw] top-[38%] block -rotate-6 text-[26vw]"
-                >
-                    B1G1
-                </span>
-                <span
-                    data-wm
-                    className="absolute -bottom-[4vw] right-[2vw] block text-[20vw]"
-                >
-                    Tuesday
-                </span>
-            </div>
-
-            <div className="relative mx-auto flex min-h-full w-full max-w-7xl flex-col px-5 py-5 sm:px-10 sm:py-8">
-                {/* Top bar */}
-                <div data-chrome className="flex items-center justify-between">
-                    <span className="font-anton text-2xl uppercase tracking-wide sm:text-3xl">
-                        Noir Bistro
-                    </span>
-                    <button
-                        ref={closeBtnRef}
-                        type="button"
-                        onClick={requestClose}
-                        aria-label="Close Tuesday offers"
-                        className="grid h-12 w-12 place-items-center bg-noir-black text-noir-red transition-transform duration-200 hover:scale-95 focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-noir-black"
-                    >
-                        <svg
-                            viewBox="0 0 24 24"
-                            className="h-6 w-6"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="3"
-                            strokeLinecap="square"
-                            aria-hidden="true"
+            {/* Typography side */}
+            <div className="offer-card__copy">
+                <div>
+                    {index !== undefined && (
+                        <p
+                            data-offer-fade
+                            className="mb-6 flex items-center gap-4 font-anton text-lg tracking-widest"
                         >
-                            <path d="M4 4l16 16M20 4L4 20" />
-                        </svg>
-                    </button>
-                </div>
+                            {pad(index)}
+                            {total !== undefined && ` / ${pad(total)}`}
+                            <span
+                                aria-hidden="true"
+                                className="h-px flex-1 bg-noir-red/60"
+                            />
+                        </p>
+                    )}
 
-                {/* Content */}
-                <div className="flex flex-1 flex-col justify-center gap-8 py-8 sm:gap-12 sm:py-12">
-                    <h2
-                        id="offer-banner-title"
-                        className="font-anton text-[clamp(4rem,16vw,13rem)] uppercase leading-[0.85]"
-                    >
-                        <span className="block overflow-hidden">
-                            <span data-line className="block">
-                                Tuesday
+                    <p className="offer-title font-anton uppercase text-white/90">
+                        <span className="block overflow-hidden pb-1">
+                            <span data-offer-line className="block">
+                                {title}
                             </span>
                         </span>
-                        <span className="block overflow-hidden">
-                            <span data-line className="block">
-                                Offers
-                            </span>
-                        </span>
-                    </h2>
-
-                    <p id="offer-banner-desc" className="sr-only">
-                        Two offers available on Tuesdays from 12 AM to 6 PM: 20% off any
-                        Chinese food, and buy 1 get 1 free on any pizza.
                     </p>
 
-                    <ul className="grid gap-5 md:grid-cols-2 md:gap-8">
-                        {TUESDAY_OFFERS.map((offer) => (
-                            <li
-                                key={offer.id}
-                                data-card
-                                className="flex flex-col justify-between gap-8 border-4 border-noir-black p-6 sm:p-8"
+                    <h3
+                        id={headingId}
+                        className="offer-highlight mt-3 font-anton text-noir-red"
+                    >
+                        {lines.map((line) => (
+                            <span
+                                key={line}
+                                className="block overflow-hidden pb-[0.04em]"
                             >
-                                <h3 className="font-anton text-[clamp(3.25rem,8vw,7rem)] uppercase leading-[0.9]">
-                                    {offer.headline}
-                                </h3>
-                                <div>
-                                    <p className="font-anton text-2xl uppercase tracking-wide sm:text-4xl">
-                                        {offer.detail}
-                                    </p>
-                                    <p className="mt-4 inline-block bg-noir-black px-4 py-2 font-anton text-xl uppercase tracking-wide text-noir-red sm:text-2xl">
-                                        {offer.time}
-                                    </p>
-                                </div>
-                            </li>
+                                <span data-offer-line className="block">
+                                    {line}
+                                </span>
+                            </span>
                         ))}
-                    </ul>
+                    </h3>
+
+                    <p className="offer-desc mt-4 font-anton uppercase text-white/90">
+                        <span className="block overflow-hidden pb-1">
+                            <span data-offer-line className="block">
+                                {description}
+                            </span>
+                        </span>
+                    </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-x-8 gap-y-5">
+                    <p data-offer-fade className="offer-detail offer-time text-noir-red">
+                        {subtitle}
+                    </p>
+
+                    <a data-offer-fade href={ctaHref} className="offer-cta offer-detail">
+                        {ctaLabel}
+                        <span aria-hidden="true" className="offer-cta__arrow">
+                            &#8599;
+                        </span>
+                    </a>
+                </div>
+
+                {index !== undefined && (
+                    <span
+                        aria-hidden="true"
+                        className="offer-card__num offer-outline font-anton"
+                    >
+                        {pad(index)}
+                    </span>
+                )}
+            </div>
+
+            {/* Photography side */}
+            <div className="offer-card__media" data-offer-media>
+                <div className="offer-frame">
+                    <span aria-hidden="true" className="offer-frame__line" />
+
+                    <div data-offer-reveal className="offer-frame__clip">
+                        <div data-offer-parallax className="offer-frame__parallax">
+                            {imgFailed ? (
+                                <div className="offer-frame__fallback font-anton text-3xl uppercase">
+                                    {description}
+                                </div>
+                            ) : (
+                                <img
+                                    src={safeSrc(imageSrc)}
+                                    alt={`${description} at Noir Bistro`}
+                                    loading="lazy"
+                                    draggable="false"
+                                    onError={() => setImgFailed(true)}
+                                    className="offer-frame__img"
+                                />
+                            )}
+                        </div>
+                    </div>
+
+                    {badgeText && (
+                        <div
+                            data-offer-badge
+                            aria-hidden="true"
+                            className="offer-badge font-anton text-xl sm:text-2xl"
+                        >
+                            {badgeText}
+                        </div>
+                    )}
                 </div>
             </div>
-        </div>,
-        document.body
+        </article>
     );
-};
-
-export default OfferBanner;
+}

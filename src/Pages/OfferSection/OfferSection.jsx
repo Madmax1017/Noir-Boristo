@@ -1,102 +1,92 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import OfferBanner, { TUESDAY_OFFERS } from "./OfferBanner";
+
+import OfferBanner from "./OfferBanner";
+import "./offers.css";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-/**
- * Swap in real photography by passing `images`:
- *   <OfferSection images={[
- *     { src: chineseImg, alt: "Chinese dishes at Noir Bistro" },
- *     { src: pizzaImg,   alt: "Fresh pizza at Noir Bistro" },
- *   ]} />
- * Entries without a `src` render a labelled placeholder frame.
- */
-const DEFAULT_IMAGES = [
-    { src: "/images/offer/Chinese-img.jpg", alt: "Chinese food image" },
-    { src: "/images/offer/Pizza-img.jpg", alt: "Pizza image" },
+const OFFERS = [
+    {
+        id: "chinese",
+        title: "TUESDAY OFFER!",
+        subtitle: "12AM TO 6PM",
+        highlight: "20% OFF",
+        description: "ANY CHINESE FOOD",
+        imageSrc: "/images/1.jpg",
+        badgeText: "Tuesday",
+    },
+    {
+        id: "pizza",
+        title: "TUESDAY OFFER!",
+        subtitle: "12AM TO 6PM",
+        highlight: "BUY 1 + GET 1 FREE",
+        description: "ANY PIZZA",
+        imageSrc: "/images/CALIFORNIA CHICKEN PIZZA ( NON-VEG ).jpg",
+        badgeText: "Tuesday",
+    },
 ];
 
-const ImageFrame = ({ image, offset }) => (
-    <figure
-        data-frame
-        className={`relative aspect-[4/5] overflow-hidden border-4 border-noir-black ${offset ? "mt-12 sm:mt-20" : ""
-            }`}
-    >
-        {image.src ? (
-            <img
-                data-parallax
-                src={image.src}
-                alt={image.alt}
-                loading="lazy"
-                className="absolute inset-x-0 -top-[8%] h-[116%] w-full object-cover"
-            />
-        ) : (
-            <div className="grid h-full w-full place-items-center bg-noir-black/10 p-4 text-center font-anton text-2xl uppercase tracking-wide">
-                {image.alt}
-            </div>
-        )}
-    </figure>
-);
-
-const OfferSection = ({ images = DEFAULT_IMAGES }) => {
+export default function OfferSection() {
     const sectionRef = useRef(null);
-    const [isOpen, setIsOpen] = useState(false);
 
     useGSAP(
         () => {
+            const section = sectionRef.current;
+            if (!section) return;
+
             const mm = gsap.matchMedia();
 
             mm.add("(prefers-reduced-motion: no-preference)", () => {
-                // One orchestrated entrance when the section scrolls into view.
-                const tl = gsap.timeline({
-                    defaults: { ease: "power4.out" },
-                    scrollTrigger: {
-                        trigger: sectionRef.current,
-                        start: "top 70%",
-                        once: true,
-                    },
-                });
-
-                tl.from("[data-line]", { yPercent: 110, duration: 0.9, stagger: 0.1 })
-                    .from(
-                        "[data-frame]",
-                        {
-                            clipPath: "inset(0% 0% 100% 0%)",
-                            duration: 1,
-                            stagger: 0.15,
-                            ease: "expo.inOut",
+                /* Header: rule draws, eyebrow wipes open, headline slides up */
+                gsap
+                    .timeline({
+                        defaults: { ease: "power4.out" },
+                        scrollTrigger: {
+                            trigger: "[data-head]",
+                            start: "top 80%",
+                            once: true,
                         },
-                        "-=0.7"
+                    })
+                    .from("[data-head-rule]", {
+                        scaleX: 0,
+                        transformOrigin: "left center",
+                        duration: 1.4,
+                        ease: "power4.inOut",
+                    })
+                    .from(
+                        "[data-head-clip]",
+                        { clipPath: "inset(0% 100% 0% 0%)", duration: 1.2 },
+                        0.15
                     )
                     .from(
-                        "[data-row]",
-                        { opacity: 0, x: -40, duration: 0.7, stagger: 0.12 },
-                        "-=0.6"
+                        "[data-head-line]",
+                        { yPercent: 110, duration: 1.2, stagger: 0.12 },
+                        0.25
                     )
-                    .from("[data-cta]", { opacity: 0, y: 20, duration: 0.6 }, "-=0.3");
-
-                // Subtle image parallax tied to scroll.
-                gsap.utils.toArray("[data-frame]").forEach((frame) => {
-                    const img = frame.querySelector("[data-parallax]");
-                    if (!img) return;
-                    gsap.fromTo(
-                        img,
-                        { yPercent: -5 },
-                        {
-                            yPercent: 5,
-                            ease: "none",
-                            scrollTrigger: {
-                                trigger: frame,
-                                start: "top bottom",
-                                end: "bottom top",
-                                scrub: true,
-                            },
-                        }
+                    .from(
+                        "[data-head-fade]",
+                        { opacity: 0, y: 16, duration: 0.8, stagger: 0.1 },
+                        0.7
                     );
-                });
+
+                /* The giant outlined word drifts slower than the page */
+                gsap.fromTo(
+                    "[data-bg-word]",
+                    { yPercent: -12 },
+                    {
+                        yPercent: 12,
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: section,
+                            start: "top bottom",
+                            end: "bottom top",
+                            scrub: true,
+                        },
+                    }
+                );
             });
 
             return () => mm.revert();
@@ -106,73 +96,81 @@ const OfferSection = ({ images = DEFAULT_IMAGES }) => {
 
     return (
         <section
+            id="offers"
             ref={sectionRef}
-            aria-labelledby="offer-section-title"
-            className="bg-noir-red text-noir-black"
+            aria-labelledby="offers-title"
+            className="offer-section overflow-x-clip bg-noir-red text-noir-black"
         >
-            <div className="mx-auto grid max-w-7xl gap-12 px-5 py-20 sm:px-10 sm:py-28 lg:grid-cols-12 lg:gap-10">
-                {/* Text column */}
-                <div className="flex flex-col justify-between gap-12 lg:col-span-6">
-                    <div>
-                        <h2
-                            id="offer-section-title"
-                            className="font-anton text-[clamp(4.5rem,13vw,11rem)] uppercase leading-[0.85]"
-                        >
-                            <span className="block overflow-hidden">
-                                <span data-line className="block">
-                                    Tuesday
-                                </span>
-                            </span>
-                            <span className="block overflow-hidden">
-                                <span data-line className="block">
-                                    Offers
-                                </span>
-                            </span>
-                        </h2>
-                    </div>
+            <div className="offer-section__grain" aria-hidden="true" />
 
-                    <ul className="border-b-4 border-noir-black">
-                        {TUESDAY_OFFERS.map((offer) => (
-                            <li
-                                key={offer.id}
-                                data-row
-                                className="flex flex-col gap-2 border-t-4 border-noir-black py-5 sm:flex-row sm:items-end sm:justify-between sm:gap-6"
+            <span
+                data-bg-word
+                aria-hidden="true"
+                className="offer-bg-word offer-outline font-anton uppercase"
+            >
+                Offers
+            </span>
+
+            <div className="relative z-10 mx-auto max-w-7xl px-5 py-20 sm:px-10 sm:py-32">
+                {/* Cinematic intro header */}
+                <header data-head>
+                    <div
+                        data-head-rule
+                        aria-hidden="true"
+                        className="h-[3px] w-full bg-noir-black"
+                    />
+
+                    <div className="mt-6 flex flex-wrap items-end justify-between gap-x-10 gap-y-6">
+                        <div>
+                            <p
+                                data-head-clip
+                                className="offer-detail text-noir-black"
                             >
-                                <p className="font-anton text-4xl uppercase leading-none sm:text-5xl">
-                                    {offer.headline}
-                                </p>
-                                <p className="font-anton text-xl uppercase leading-tight tracking-wide sm:text-right sm:text-2xl">
-                                    {offer.detail}
-                                    <span className="block">{offer.time}</span>
-                                </p>
-                            </li>
-                        ))}
-                    </ul>
+                                Exclusive Promos /
+                            </p>
 
-                    <div data-cta>
-                        <button
-                            type="button"
-                            onClick={() => setIsOpen(true)}
-                            aria-haspopup="dialog"
-                            aria-expanded={isOpen}
-                            className="bg-noir-black px-8 py-4 font-anton text-2xl uppercase tracking-wide text-noir-red transition-transform duration-200 hover:-translate-y-1 focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-noir-black"
+                            <h2
+                                id="offers-title"
+                                className="mt-3 font-anton text-[clamp(3.75rem,13vw,11rem)] uppercase leading-[0.85]"
+                            >
+                                <span className="block overflow-hidden pb-[0.05em]">
+                                    <span data-head-line className="block">
+                                        Special
+                                    </span>
+                                </span>
+                                <span className="block overflow-hidden pb-[0.05em]">
+                                    <span data-head-line className="block">
+                                        Deals
+                                    </span>
+                                </span>
+                            </h2>
+                        </div>
+
+                        <p
+                            data-head-fade
+                            className="offer-detail flex items-center gap-3 pb-2 text-noir-black"
                         >
-                            View Tuesday offers
-                        </button>
+                            Tuesday / 12AM to 6PM
+                            <span aria-hidden="true" className="text-2xl leading-none">
+                                &#8599;
+                            </span>
+                        </p>
                     </div>
-                </div>
+                </header>
 
-                {/* Imagery column */}
-                <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:col-span-6">
-                    {images.slice(0, 2).map((image, i) => (
-                        <ImageFrame key={image.alt + i} image={image} offset={i === 1} />
+                {/* Promo cards */}
+                <div className="mt-14 flex flex-col gap-12 sm:mt-20 sm:gap-20">
+                    {OFFERS.map((offer, i) => (
+                        <OfferBanner
+                            key={offer.id}
+                            {...offer}
+                            index={i + 1}
+                            total={OFFERS.length}
+                            reverse={i % 2 === 1}
+                        />
                     ))}
                 </div>
             </div>
-
-            {isOpen && <OfferBanner onClose={() => setIsOpen(false)} />}
         </section>
     );
-};
-
-export default OfferSection;
+}
