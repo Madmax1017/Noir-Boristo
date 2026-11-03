@@ -12,7 +12,6 @@ gsap.registerPlugin(ScrollTrigger);
 export default function ContactSection() {
   const [isOpen, setIsOpen] = useState(false);
   const sectionRef = useRef(null);
-  const badgeRef = useRef(null);
   const kickerRef = useRef(null);
   const copyRef = useRef(null);
   const ctaRef = useRef(null);
@@ -29,15 +28,14 @@ export default function ContactSection() {
     if (prefersReduced) return;
 
     const ctx = gsap.context(() => {
-      // Badge + kicker fade
+      // Kicker fade
       gsap.fromTo(
-        [badgeRef.current, kickerRef.current],
+        kickerRef.current,
         { opacity: 0, y: 14 },
         {
           opacity: 1,
           y: 0,
           duration: 0.7,
-          stagger: 0.08,
           ease: "power3.out",
           scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
         }
@@ -141,20 +139,22 @@ export default function ContactSection() {
       ref={sectionRef}
       className="contact-section relative overflow-hidden"
     >
-      {/* Giant background number */}
-      <div className="contact-bg-number" aria-hidden="true">
-        05
-      </div>
-
       <div className="relative mx-auto max-w-[1400px] px-6 pt-28 pb-16 md:px-14 lg:px-20 md:pt-40 lg:pt-48 md:pb-20">
-        {/* ── Row 1: Badge + Kicker ───────────────────── */}
-        <div className="flex items-center gap-5 mb-10">
-          <div ref={badgeRef} className="contact-badge">
-            05
+        {/* ── Row 1: Interactive Bubble-Fill Heading Kicker ───────────── */}
+        <div className="mb-10 flex items-center">
+          <div ref={kickerRef} className="inline-block">
+            <span className="group relative inline-flex items-center overflow-hidden rounded-full border border-[#0A0A0A]/20 px-6 py-2.5 transition-colors duration-500">
+              {/* Black Bubble Fill Background Animation */}
+              <span
+                aria-hidden="true"
+                className="absolute inset-0 bg-[#0A0A0A] translate-y-full rounded-full transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:translate-y-0"
+              />
+              {/* Kicker Text with color inversion on hover */}
+              <span className="relative z-10 font-anton text-sm tracking-[0.25em] text-[#0A0A0A] transition-colors duration-500 group-hover:text-white">
+                ORDER / CONTACT
+              </span>
+            </span>
           </div>
-          <p ref={kickerRef} className="contact-kicker">
-            ORDER / CONTACT
-          </p>
         </div>
 
         {/* ── Row 2: Headline ─────────────────────────── */}

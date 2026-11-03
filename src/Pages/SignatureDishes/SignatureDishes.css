@@ -1,0 +1,373 @@
+/* ==========================================================================
+   Signature Dishes: red canvas, near-black type, no gradients, no shadows.
+   ========================================================================== */
+
+.signature-dishes {
+    --sd-red: var(--color-noir-red, #ea0001);
+    --sd-black: var(--color-noir-black, #0a0a0a);
+
+    /* mobile defaults */
+    --card-w: 82vw;
+    --card-gap: 6vw;
+    --frame: min(72vw, 58svh);
+
+    background: var(--sd-red);
+    color: var(--sd-black);
+    overflow-x: clip;
+    /* never let the section widen the page */
+}
+
+@media (min-width: 640px) {
+    .signature-dishes {
+        --card-w: 64vw;
+        --card-gap: 5vw;
+        --frame: min(46vw, 56svh);
+    }
+}
+
+@media (min-width: 1024px) {
+    .signature-dishes {
+        --card-w: clamp(640px, 62vw, 1000px);
+        --card-gap: clamp(32px, 4vw, 72px);
+        --frame: min(30vw, 62svh);
+    }
+}
+
+/* ---------- showcase shell ---------- */
+
+.dish-showcase {
+    position: relative;
+    padding-block: clamp(1.5rem, 5vh, 3.5rem) clamp(2rem, 6vh, 4rem);
+    background: var(--sd-red);
+}
+
+/* ---------- viewport / track: native horizontal swipe ---------- */
+
+.dish-viewport {
+    width: 100%;
+    padding-block: 2rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.dish-viewport::-webkit-scrollbar {
+    display: none;
+}
+
+.dish-viewport:focus-visible {
+    outline: 2px solid var(--sd-black);
+    outline-offset: -6px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .dish-viewport {
+        cursor: grab;
+    }
+}
+
+.dish-viewport.is-dragging,
+.dish-viewport.is-animating {
+    scroll-snap-type: none;
+    /* let JS move it freely, then snap again on release */
+}
+
+.dish-viewport.is-dragging {
+    cursor: grabbing;
+    user-select: none;
+}
+
+.dish-track {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--card-gap);
+    width: max-content;
+    /* first and last card can sit dead centre */
+    padding-inline: calc((100% - var(--card-w)) / 2);
+}
+
+/* ---------- card ---------- */
+
+.dish-card {
+    position: relative;
+    flex: 0 0 var(--card-w);
+    width: var(--card-w);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+}
+
+.dish-media {
+    position: relative;
+    z-index: 1;
+    will-change: transform, opacity;
+}
+
+.dish-hover {
+    position: relative;
+    width: var(--w);
+    height: var(--h);
+    will-change: transform;
+}
+
+.dish-frame {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--sd-black);
+    /* placeholder while the photo loads */
+}
+
+.dish-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.25);
+    /* overscan so the parallax never shows an edge */
+    -webkit-user-drag: none;
+    will-change: transform;
+}
+
+/* three asymmetric framings */
+.dish-card--arch {
+    --w: calc(var(--frame) * 0.82);
+    --h: var(--frame);
+}
+
+.dish-card--circle {
+    --w: calc(var(--frame) * 0.94);
+    --h: calc(var(--frame) * 0.94);
+}
+
+.dish-card--slab {
+    --w: calc(var(--frame) * 1.08);
+    --h: calc(var(--frame) * 0.86);
+}
+
+.dish-card--arch .dish-frame {
+    border-radius: 999px 999px 0 0;
+}
+
+.dish-card--circle .dish-frame {
+    border-radius: 50%;
+}
+
+.dish-card--slab .dish-frame {
+    border-radius: 0;
+}
+
+/* ---------- text ---------- */
+
+.dish-text {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+    width: 100%;
+    min-width: 0;
+    will-change: opacity;
+}
+
+.dish-text>* {
+    will-change: transform;
+}
+
+.dish-category {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.85rem;
+    border: 1.5px solid var(--sd-black);
+    border-radius: 999px;
+    font: 600 0.72rem/1 ui-sans-serif, system-ui, "Inter", sans-serif;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.dish-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--sd-black);
+}
+
+.dish-type {
+    opacity: 0.6;
+}
+
+.dish-name {
+    font-size: clamp(2.1rem, 9.5vw, 3.2rem);
+    line-height: 0.92;
+    letter-spacing: -0.015em;
+    text-transform: uppercase;
+    overflow-wrap: break-word;
+}
+
+.dish-word {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: top;
+    padding-block: 0.04em;
+}
+
+.dish-marathi {
+    padding-top: 0.75rem;
+    border-top: 2px solid var(--sd-black);
+    width: min(100%, 15rem);
+    font-family: "Noto Sans Devanagari", "Mukta", "Nirmala UI", system-ui, sans-serif;
+    font-weight: 600;
+    font-size: clamp(1.05rem, 4vw, 1.4rem);
+    line-height: 1.25;
+}
+
+/* desktop: side-by-side, alternating sides, offset verticals */
+@media (min-width: 1024px) {
+    .dish-card {
+        flex-direction: row;
+        justify-content: space-between;
+        gap: clamp(1rem, 2.5vw, 2.5rem);
+    }
+
+    .dish-card--flip {
+        flex-direction: row-reverse;
+    }
+
+    .dish-card--flip .dish-text {
+        align-items: flex-end;
+        text-align: right;
+    }
+
+    .dish-card--flip .dish-marathi {
+        margin-left: auto;
+    }
+
+    .dish-text {
+        flex: 1;
+    }
+
+    .dish-name {
+        font-size: clamp(2.4rem, 4.2vw, 4.75rem);
+    }
+
+    .dish-marathi {
+        font-size: clamp(1.1rem, 1.7vw, 1.5rem);
+    }
+
+    .dish-card--arch .dish-media {
+        margin-top: -4vh;
+    }
+
+    .dish-card--slab .dish-media {
+        margin-top: 5vh;
+    }
+}
+
+/* ---------- bottom bar: counter, progress, prev / next ---------- */
+
+.dish-bar {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 3vw, 3rem);
+    padding-inline: clamp(1rem, 4vw, 4rem);
+}
+
+.dish-counter {
+    display: flex;
+    align-items: baseline;
+    gap: 0.35em;
+    font-size: clamp(2.25rem, 5vw, 4.5rem);
+    line-height: 1;
+}
+
+.dish-counter-mask {
+    display: inline-block;
+    overflow: hidden;
+}
+
+.dish-counter-current {
+    display: inline-block;
+}
+
+.dish-counter-total {
+    font-size: 0.45em;
+    opacity: 0.6;
+}
+
+.dish-progress {
+    flex: 1;
+    height: 2px;
+    background: rgb(10 10 10 / 0.25);
+}
+
+.dish-progress>span {
+    display: block;
+    height: 100%;
+    background: var(--sd-black);
+    transform-origin: left center;
+}
+
+.dish-nav {
+    display: flex;
+    gap: 0.6rem;
+}
+
+.dish-btn {
+    padding: 0.65rem 1.1rem;
+    border: 2px solid var(--sd-black);
+    background: transparent;
+    color: var(--sd-black);
+    font-size: 0.85rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, opacity 0.3s ease;
+}
+
+.dish-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+.dish-btn:focus-visible {
+    outline: 2px solid var(--sd-black);
+    outline-offset: 3px;
+}
+
+@media (hover: hover) {
+    .dish-btn:not(:disabled):hover {
+        background: var(--sd-black);
+        color: var(--sd-red);
+    }
+}
+
+/* ---------- used by DishTitle's "Scroll to taste" arrow ---------- */
+
+@keyframes dish-drop {
+    from {
+        transform: translateY(-3px);
+    }
+
+    to {
+        transform: translateY(5px);
+    }
+}
+
+.dish-drop {
+    animation: dish-drop 1.4s cubic-bezier(0.65, 0, 0.35, 1) infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dish-drop {
+        animation: none;
+    }
+}

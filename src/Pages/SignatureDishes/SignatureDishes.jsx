@@ -1,375 +1,432 @@
-import { useEffect, useRef, useState } from "react";
-import { useGSAP } from "@gsap/react";
+import { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SplitText } from "gsap/SplitText";
+import { useGSAP } from "@gsap/react";
 
-import dishes from "./data/dishes";
-import DishCard from "./components/DishCard";
-import DishesTitle from "./components/DishesTitle";
+import dishes from "./data/dishes.js";
+import DishTitle from "./components/DishesTitle.jsx";
+import DishCard from "./components/DishCard.jsx";
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+import "./SignatureDishes.css";
 
-/* Anton has no Devanagari glyphs, so Marathi needs its own font stack.
-   Load "Noto Sans Devanagari" (or Mukta) on your site for best results. */
-const MARATHI_FONT =
-    '"Noto Sans Devanagari", "Mukta", "Nirmala UI", "Mangal", sans-serif';
+gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText);
 
-const SWIPE_DISTANCE = 50; // px needed to count as a swipe
 const pad = (n) => String(n).padStart(2, "0");
-const prefersReducedMotion = () =>
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-/* Square + dot = veg, square + triangle = non-veg */
-const DietMark = ({ veg }) => (
-    <svg viewBox="0 0 24 24" className="h-6 w-6 shrink-0" aria-hidden="true">
-        <rect
-            x="2"
-            y="2"
-            width="20"
-            height="20"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-        />
-        {veg ? (
-            <circle cx="12" cy="12" r="5" fill="currentColor" />
-        ) : (
-            <path d="M12 6l6 11H6z" fill="currentColor" />
-        )}
-    </svg>
-);
-
-const Arrow = ({ flip = false }) => (
-    <svg
-        viewBox="0 0 24 24"
-        className={`h-6 w-6 ${flip ? "rotate-180" : ""}`}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="3"
-        strokeLinecap="square"
-        aria-hidden="true"
-    >
-        <path d="M3 12h17M14 6l6 6-6 6" />
-    </svg>
-);
-
+/**
+ * Swipe-based horizontal showcase. The page itself still scrolls vertically as normal.
+ *   - touch: native swipe with scroll-snap
+ *   - trackpad: native horizontal scroll
+ *   - mouse: click and drag with a little momentum, or PREV / NEXT, or arrow keys
+ * While you swipe, every layer moves at a different speed (parallax).
+ */
 export default function SignatureDishes() {
-    const sectionRef = useRef(null);
+    const root = useRef(null);
+    const showcaseRef = useRef(null);
+    const viewportRef = useRef(null);
+    const counterRef = useRef(null);
+    const barRef = useRef(null);
+    const prevRef = useRef(null);
+    const nextRef = useRef(null);
+    const api = useRef({ go: () => { } });
 
-    const [index, setIndex] = useState(0);
+    const total = dishes.length;
 
-    const indexRef = useRef(0);
-    const dirRef = useRef(1); // 1 = next, -1 = previous
-    const busyRef = useRef(false);
-    const firstRunRef = useRef(true);
-    const inViewRef = useRef(false);
-    const goRef = useRef(() => { });
-    const dragRef = useRef({ active: false, x: 0, y: 0, dx: 0, dy: 0 });
-
-    const dish = dishes[index];
-    indexRef.current = index;
-
-    const getParts = () => {
-        const section = sectionRef.current;
-        const frame = section.querySelector("[data-frame]");
-        return {
-            section,
-            frame,
-            img: frame.querySelector("img"),
-            wm: section.querySelector("[data-wm]"),
-            texts: Array.from(section.querySelectorAll("[data-text]")),
-        };
-    };
-
-    /* ── Entrance animation: runs on mount and after every slide change ── */
-    const { contextSafe } = useGSAP(
+    useGSAP(
         () => {
-            if (!sectionRef.current) return;
+            const rootEl = root.current;
+            const showcase = showcaseRef.current;
+            const viewport = viewportRef.current;
+            const counterEl = counterRef.current;
+            const barEl = barRef.current;
+            const prevBtn = prevRef.current;
+            const nextBtn = nextRef.current;
 
-            const { section, frame, img, wm, texts } = getParts();
-            const dir = dirRef.current;
-            const isFirst = firstRunRef.current;
-            firstRunRef.current = false;
+            const cards = gsap.utils.toArray(".dish-card", rootEl);
+            const n = cards.length;
+            if (!n) return;
 
-            if (prefersReducedMotion()) {
-                gsap.set([frame, img, wm, ...texts], { clearProps: "all" });
-                busyRef.current = false;
-                return;
-            }
+            const pick = (sel) => cards.map((c) => c.querySelector(sel));
+            const medias = pick(".dish-media");
+            const frames = pick(".dish-frame");
+            const imgs = pick(".dish-img");
+            const texts = pick(".dish-text");
+            const textKids = texts.map((t) => Array.from(t.children));
+            const barKids = gsap.utils.toArray(".dish-bar > *", rootEl);
 
-            busyRef.current = true;
+            const mm = gsap.matchMedia();
 
-            const tl = gsap.timeline({
-                defaults: { ease: "power4.out" },
-                scrollTrigger: isFirst
-                    ? { trigger: section, start: "top 70%", once: true }
-                    : undefined,
-                onComplete: () => {
-                    busyRef.current = false;
-                },
-            });
-
-            tl.fromTo(
-                frame,
+            mm.add(
                 {
-                    clipPath:
-                        dir > 0 ? "inset(0% 0% 0% 100%)" : "inset(0% 100% 0% 0%)",
+                    motion: "(prefers-reduced-motion: no-preference)",
+                    reduce: "(prefers-reduced-motion: reduce)",
                 },
-                {
-                    clipPath: "inset(0% 0% 0% 0%)",
-                    duration: 1,
-                    ease: "expo.inOut",
-                },
-                0
-            )
-                .fromTo(
-                    img,
-                    { scale: 1.25, opacity: 0 },
-                    { scale: 1, opacity: 1, duration: 1.3, ease: "power3.out" },
-                    0.1
-                )
-                .fromTo(
-                    wm,
-                    { opacity: 0, xPercent: dir * 10 },
-                    { opacity: 1, xPercent: 0, duration: 1.1 },
-                    0.1
-                )
-                .fromTo(
-                    texts,
-                    { yPercent: 115 },
-                    { yPercent: 0, duration: 0.8, stagger: 0.07 },
-                    0.35
-                );
+                (ctx) => {
+                    const { motion } = ctx.conditions;
+
+                    let current = -1;
+                    let targetIdx = 0;
+                    let entered = false;
+                    let raf = 0;
+                    let tween = null;
+                    const revealed = new Array(n).fill(false);
+                    const visible = new Set();
+                    const far = new Array(n).fill(false);
+                    const textDone = new Array(n).fill(false);
+                    const nameSplits = [];
+                    const m = { mid: 0, step: 1, centers: [] };
+
+                    const clamp = gsap.utils.clamp;
+
+                    const measure = () => {
+                        m.mid = viewport.clientWidth / 2;
+                        m.step = cards[1] ? cards[1].offsetLeft - cards[0].offsetLeft : viewport.clientWidth;
+                        m.centers = cards.map((c) => c.offsetLeft + c.offsetWidth / 2);
+                    };
+
+                    /* ---------- index / counter ---------- */
+
+                    const setIndex = (i) => {
+                        if (i === current) return;
+                        const first = current === -1;
+                        current = i;
+                        counterEl.textContent = pad(i + 1);
+                        if (motion && !first) {
+                            gsap.fromTo(
+                                counterEl,
+                                { yPercent: 70, opacity: 0 },
+                                { yPercent: 0, opacity: 1, duration: 0.5, ease: "power3.out", overwrite: "auto" }
+                            );
+                        }
+                        prevBtn.disabled = i === 0;
+                        nextBtn.disabled = i === n - 1;
+
+                        // the newly featured dish re-types its name, a quick, quiet cue
+                        if (motion && !first && textDone[i] && nameSplits[i]) {
+                            gsap.fromTo(
+                                nameSplits[i].chars,
+                                { yPercent: 70, opacity: 0 },
+                                {
+                                    yPercent: 0,
+                                    opacity: 1,
+                                    duration: 0.55,
+                                    ease: "power3.out",
+                                    stagger: 0.015,
+                                    overwrite: "auto",
+                                }
+                            );
+                        }
+                    };
+
+                    /* ---------- entrance (image mask + text rise) ---------- */
+
+                    const reveal = (i) => {
+                        if (revealed[i] || !entered) return;
+                        revealed[i] = true;
+                        const delay = Math.abs(i - Math.max(current, 0)) * 0.12;
+                        gsap.to(frames[i], {
+                            clipPath: "inset(0% 0% 0% 0%)",
+                            duration: 1.1,
+                            ease: "power4.inOut",
+                            delay,
+                        });
+                        gsap.to(imgs[i], { scale: 1.25, duration: 1.6, ease: "power3.out", delay });
+                        const [cat, nameEl, mar] = textKids[i];
+                        gsap
+                            .timeline({
+                                delay: delay + 0.3,
+                                onComplete: () => {
+                                    textDone[i] = true;
+                                },
+                            })
+                            .to(cat, {
+                                clipPath: "inset(0% 0% 0% 0%)",
+                                opacity: 1,
+                                duration: 0.7,
+                                ease: "power4.inOut",
+                            })
+                            .to(
+                                nameSplits[i].chars,
+                                { yPercent: 0, stagger: 0.025, duration: 0.8, ease: "power4.out" },
+                                "-=0.4"
+                            )
+                            .to(mar, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out" }, "-=0.5");
+                    };
+
+                    const markVisible = (i) => {
+                        visible.add(i);
+                        reveal(i);
+                    };
+
+                    /* ---------- per-frame parallax, driven by scrollLeft ---------- */
+
+                    const update = () => {
+                        raf = 0;
+                        const sl = viewport.scrollLeft;
+                        const f = sl / m.step;
+
+                        setIndex(clamp(0, n - 1, Math.round(f)));
+                        if (!tween || !tween.isActive()) targetIdx = current;
+                        gsap.set(barEl, { scaleX: (f + 1) / n });
+
+                        if (!motion) return;
+
+                        cards.forEach((_, i) => {
+                            const d = (m.centers[i] - sl - m.mid) / m.step; // 0 = centred, +-1 = one card away
+                            const abs = Math.abs(d);
+                            if (abs < 1.3) markVisible(i);
+
+                            if (abs > 2.2) {
+                                if (far[i]) return;
+                                far[i] = true;
+                            } else {
+                                far[i] = false;
+                            }
+
+                            const a = Math.min(abs, 1);
+                            const k = a * a * (3 - 2 * a); // smoothstep
+                            const side = clamp(-1, 1, d);
+                            const dd = clamp(-1.6, 1.6, d);
+
+                            // depth: the featured dish is biggest and fully opaque
+                            gsap.set(medias[i], {
+                                scale: 1 - 0.1 * k,
+                                opacity: 1 - 0.45 * k,
+                                rotate: side * 2,
+                            });
+                            // image slides inside its frame, opposite to the swipe
+                            gsap.set(imgs[i], { xPercent: clamp(-1.2, 1.2, d) * -7 });
+                            // text block fades; each line trails at its own speed
+                            gsap.set(texts[i], { opacity: 1 - 0.9 * k });
+                            gsap.set(textKids[i][0], { x: dd * -24 });
+                            gsap.set(textKids[i][1], { x: dd * -56 });
+                            gsap.set(textKids[i][2], { x: dd * -88 });
+                        });
+                    };
+
+                    const requestUpdate = () => {
+                        if (!raf) raf = requestAnimationFrame(update);
+                    };
+
+                    /* ---------- navigation ---------- */
+
+                    const release = () => viewport.classList.remove("is-animating");
+
+                    const killTween = () => {
+                        if (tween) {
+                            tween.kill();
+                            tween = null;
+                            release();
+                        }
+                    };
+
+                    const goTo = (i) => {
+                        const idx = clamp(0, n - 1, i);
+                        targetIdx = idx;
+                        const left = idx * m.step;
+                        if (!motion) {
+                            viewport.scrollTo({ left });
+                            return;
+                        }
+                        killTween();
+                        viewport.classList.add("is-animating"); // snap off while we tween
+                        tween = gsap.to(viewport, {
+                            scrollLeft: left,
+                            duration: 0.9,
+                            ease: "power3.inOut",
+                            onComplete: () => {
+                                tween = null;
+                                release();
+                            },
+                        });
+                    };
+
+                    api.current.go = (dir) => goTo(targetIdx + dir);
+
+                    /* ---------- mouse drag with a little momentum ---------- */
+
+                    let dragging = false;
+                    let startX = 0;
+                    let startLeft = 0;
+                    let lastX = 0;
+                    let lastT = 0;
+                    let vel = 0;
+
+                    const onDown = (e) => {
+                        if (e.pointerType !== "mouse" || e.button !== 0) return;
+                        killTween();
+                        dragging = true;
+                        startX = lastX = e.clientX;
+                        startLeft = viewport.scrollLeft;
+                        lastT = performance.now();
+                        vel = 0;
+                        viewport.classList.add("is-dragging");
+                        try {
+                            viewport.setPointerCapture(e.pointerId);
+                        } catch (_) { }
+                    };
+                    const onMove = (e) => {
+                        if (!dragging) return;
+                        viewport.scrollLeft = startLeft - (e.clientX - startX);
+                        const now = performance.now();
+                        const dt = Math.max(now - lastT, 1);
+                        vel = 0.8 * vel + 0.2 * ((e.clientX - lastX) / dt);
+                        lastX = e.clientX;
+                        lastT = now;
+                    };
+                    const onUp = () => {
+                        if (!dragging) return;
+                        dragging = false;
+                        viewport.classList.remove("is-dragging");
+                        goTo(Math.round((viewport.scrollLeft - vel * 250) / m.step));
+                    };
+
+                    viewport.addEventListener("pointerdown", onDown);
+                    viewport.addEventListener("pointermove", onMove);
+                    viewport.addEventListener("pointerup", onUp);
+                    viewport.addEventListener("pointercancel", onUp);
+                    // a touch or wheel gesture takes over from any running tween
+                    viewport.addEventListener("touchstart", killTween, { passive: true });
+                    viewport.addEventListener("wheel", killTween, { passive: true });
+                    viewport.addEventListener("scroll", requestUpdate, { passive: true });
+
+                    const ro = new ResizeObserver(() => {
+                        measure();
+                        requestUpdate();
+                    });
+                    ro.observe(viewport);
+
+                    /* ---------- initial state + section entrance ---------- */
+
+                    measure();
+                    gsap.set(barEl, { scaleX: 1 / n });
+
+                    if (motion) {
+                        gsap.set(frames, { clipPath: "inset(0% 0% 100% 0%)" });
+                        gsap.set(imgs, { scale: 1.5 });
+
+                        // text: category wipes in, name rises char by char, Marathi line fades up
+                        textKids.forEach(([cat, nameEl, mar], i) => {
+                            nameSplits[i] = new SplitText(nameEl, {
+                                type: "words,chars",
+                                wordsClass: "dish-word",
+                            });
+                            gsap.set(cat, { clipPath: "inset(0% 100% 0% 0%)", opacity: 0 });
+                            gsap.set(nameSplits[i].chars, { yPercent: 115 });
+                            gsap.set(mar, { y: 24, opacity: 0 });
+                        });
+                        gsap.set(barKids, { y: 18, opacity: 0 });
+
+                        ScrollTrigger.create({
+                            trigger: showcase,
+                            start: "top 78%",
+                            once: true,
+                            onEnter: () => {
+                                entered = true;
+                                gsap.to(barKids, {
+                                    y: 0,
+                                    opacity: 1,
+                                    duration: 0.8,
+                                    ease: "power3.out",
+                                    stagger: 0.06,
+                                });
+                                visible.forEach(reveal);
+                            },
+                        });
+                    }
+
+                    update();
+
+                    return () => {
+                        if (raf) cancelAnimationFrame(raf);
+                        killTween();
+                        nameSplits.forEach((sp) => sp && sp.revert());
+                        ro.disconnect();
+                        viewport.removeEventListener("pointerdown", onDown);
+                        viewport.removeEventListener("pointermove", onMove);
+                        viewport.removeEventListener("pointerup", onUp);
+                        viewport.removeEventListener("pointercancel", onUp);
+                        viewport.removeEventListener("touchstart", killTween);
+                        viewport.removeEventListener("wheel", killTween);
+                        viewport.removeEventListener("scroll", requestUpdate);
+                        viewport.classList.remove("is-dragging", "is-animating");
+                        api.current.go = () => { };
+                    };
+                }
+            );
+
+            return () => mm.revert();
         },
-        { scope: sectionRef, dependencies: [index] }
+        { scope: root }
     );
 
-    /* ── Exit animation, then swap the dish ── */
-    const goTo = contextSafe((dir) => {
-        if (busyRef.current) return;
-        busyRef.current = true;
-        dirRef.current = dir;
-
-        const next = (indexRef.current + dir + dishes.length) % dishes.length;
-
-        if (prefersReducedMotion()) {
-            setIndex(next);
-            return;
+    const onKeyDown = (e) => {
+        if (e.key === "ArrowRight") {
+            e.preventDefault();
+            api.current.go(1);
+        } else if (e.key === "ArrowLeft") {
+            e.preventDefault();
+            api.current.go(-1);
         }
-
-        const { frame, wm, texts } = getParts();
-
-        gsap.timeline({
-            defaults: { ease: "power3.in" },
-            onComplete: () => setIndex(next),
-        })
-            .to(texts, { yPercent: -115, duration: 0.45, stagger: 0.04 }, 0)
-            .to(
-                frame,
-                {
-                    x: 0,
-                    clipPath:
-                        dir > 0 ? "inset(0% 100% 0% 0%)" : "inset(0% 0% 0% 100%)",
-                    duration: 0.6,
-                    ease: "expo.in",
-                },
-                0.05
-            )
-            .to(wm, { opacity: 0, xPercent: -dir * 10, duration: 0.5 }, 0);
-    });
-
-    goRef.current = goTo;
-
-    /* ── Touch / pointer swipe ── */
-    const onPointerDown = contextSafe((e) => {
-        if (e.pointerType === "mouse" && e.button !== 0) return;
-        dragRef.current = {
-            active: true,
-            x: e.clientX,
-            y: e.clientY,
-            dx: 0,
-            dy: 0,
-        };
-        e.currentTarget.setPointerCapture?.(e.pointerId);
-    });
-
-    const onPointerMove = contextSafe((e) => {
-        const d = dragRef.current;
-        if (!d.active || busyRef.current) return;
-        d.dx = e.clientX - d.x;
-        d.dy = e.clientY - d.y;
-
-        // Photo follows the finger a little for tactile feedback
-        if (Math.abs(d.dx) > Math.abs(d.dy)) {
-            gsap.to(getParts().frame, {
-                x: d.dx * 0.35,
-                duration: 0.25,
-                ease: "power3.out",
-                overwrite: "auto",
-            });
-        }
-    });
-
-    const endDrag = contextSafe((e) => {
-        const d = dragRef.current;
-        if (!d.active) return;
-        d.active = false;
-        e.currentTarget.releasePointerCapture?.(e.pointerId);
-
-        const isSwipe =
-            Math.abs(d.dx) > SWIPE_DISTANCE &&
-            Math.abs(d.dx) > Math.abs(d.dy) * 1.2;
-
-        if (isSwipe && !busyRef.current) {
-            goTo(d.dx < 0 ? 1 : -1); // swipe left = next
-        } else {
-            gsap.to(getParts().frame, {
-                x: 0,
-                duration: 0.5,
-                ease: "power3.out",
-                overwrite: "auto",
-            });
-        }
-    });
-
-    /* ── Keyboard arrows (only while the section is on screen) ── */
-    useEffect(() => {
-        const section = sectionRef.current;
-        if (!section) return;
-
-        const io = new IntersectionObserver(
-            ([entry]) => {
-                inViewRef.current = entry.isIntersecting;
-            },
-            { threshold: 0.4 }
-        );
-        io.observe(section);
-
-        const onKeyDown = (e) => {
-            if (!inViewRef.current) return;
-            const tag = e.target?.tagName;
-            if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
-            if (e.key === "ArrowRight") goRef.current(1);
-            else if (e.key === "ArrowLeft") goRef.current(-1);
-        };
-
-        window.addEventListener("keydown", onKeyDown);
-        return () => {
-            io.disconnect();
-            window.removeEventListener("keydown", onKeyDown);
-        };
-    }, []);
-
-    /* ── Preload neighbouring images so swaps never flash blank ── */
-    useEffect(() => {
-        [1, -1].forEach((step) => {
-            const n = dishes[(index + step + dishes.length) % dishes.length];
-            const img = new Image();
-            img.src = n.image;
-        });
-    }, [index]);
-
-    const isVeg = dish.category === "VEG";
+    };
 
     return (
-        <>
-            <DishesTitle />
+        <section
+            ref={root}
+            id="signature-dishes"
+            className="signature-dishes bg-noir-red text-noir-black"
+            aria-label="Signature dishes"
+        >
+            <DishTitle count={total} />
 
-            <section
-                ref={sectionRef}
-                id="menu"
-                aria-roledescription="carousel"
-                aria-label="Noir Bistro signature dishes"
-                className="relative flex min-h-[100svh] flex-col overflow-hidden bg-noir-red text-noir-black"
-            >
-                {/* Navigation arrows */}
-                <div className="relative z-10 flex justify-end gap-2 px-5 pt-6 sm:gap-3 sm:px-10 sm:pt-10">
-                    <button
-                        type="button"
-                        onClick={() => goTo(-1)}
-                        aria-label="Previous dish"
-                        className="grid h-12 w-12 place-items-center border-4 border-noir-black transition-colors duration-200 hover:bg-noir-black hover:text-noir-red focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-noir-black sm:h-14 sm:w-14"
-                    >
-                        <Arrow flip />
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => goTo(1)}
-                        aria-label="Next dish"
-                        className="grid h-12 w-12 place-items-center border-4 border-noir-black bg-noir-black text-noir-red transition-transform duration-200 hover:scale-95 focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-noir-black sm:h-14 sm:w-14"
-                    >
-                        <Arrow />
-                    </button>
-                </div>
-
-                {/* Stage: swipeable dish */}
+            <div ref={showcaseRef} className="dish-showcase">
                 <div
-                    role="group"
-                    aria-roledescription="slide"
-                    aria-label={`${index + 1} of ${dishes.length}`}
-                    onPointerDown={onPointerDown}
-                    onPointerMove={onPointerMove}
-                    onPointerUp={endDrag}
-                    onPointerCancel={endDrag}
-                    className="relative flex flex-1 cursor-grab touch-pan-y select-none items-center justify-center py-6 active:cursor-grabbing"
+                    ref={viewportRef}
+                    className="dish-viewport"
+                    tabIndex={0}
+                    role="region"
+                    aria-roledescription="carousel"
+                    aria-label="Signature dishes, swipe or use the left and right arrow keys"
+                    onKeyDown={onKeyDown}
                 >
-                    <DishCard dish={dish} />
-                </div>
-
-                {/* Footer: counter (left) + dish details (right) */}
-                <div className="relative z-10 flex items-end justify-between gap-6 px-5 pb-6 sm:px-10 sm:pb-10">
-                    <p className="font-anton leading-none">
-                        <span className="block overflow-hidden py-1">
-                            <span
-                                data-text
-                                className="block text-[clamp(3rem,9vw,7rem)]"
-                            >
-                                {pad(index + 1)}
-                                <span className="ml-2 text-[0.4em]">
-                                    / {pad(dishes.length)}
-                                </span>
-                            </span>
-                        </span>
-                    </p>
-
-                    <div className="ml-auto flex max-w-[60%] flex-col items-end text-right sm:max-w-[50%]">
-                        <span className="block overflow-hidden py-1">
-                            <span
-                                data-text
-                                className="flex items-center gap-2 font-anton text-lg uppercase tracking-wide sm:text-xl"
-                            >
-                                <DietMark veg={isVeg} />
-                                {dish.category}
-                            </span>
-                        </span>
-
-                        <h3 className="block overflow-hidden py-1">
-                            <span
-                                data-text
-                                className="block font-anton text-[clamp(1.75rem,4.5vw,4rem)] uppercase leading-[0.95]"
-                            >
-                                {dish.displayName}
-                            </span>
-                        </h3>
-
-                        <span className="block overflow-hidden py-1">
-                            <span
-                                data-text
-                                lang="mr"
-                                style={{ fontFamily: MARATHI_FONT }}
-                                className="block text-[clamp(1.1rem,2.4vw,1.75rem)] font-semibold leading-snug"
-                            >
-                                {dish.marathiName}
-                            </span>
-                        </span>
+                    <div className="dish-track">
+                        {dishes.map((dish, i) => (
+                            <DishCard
+                                key={dish.id}
+                                dish={dish}
+                                index={i}
+                                total={total}
+                                priority={i === 0}
+                            />
+                        ))}
                     </div>
                 </div>
 
-                {/* Screen-reader announcement on slide change */}
-                <p className="sr-only" aria-live="polite">
-                    {`Dish ${index + 1} of ${dishes.length}: ${dish.name}, ${dish.category}`}
-                </p>
-            </section>
-        </>
+                <div className="dish-bar">
+                    <div className="dish-counter font-anton" aria-live="polite">
+                        <span className="dish-counter-mask">
+                            <span ref={counterRef} className="dish-counter-current">
+                                01
+                            </span>
+                        </span>
+                        <span className="dish-counter-total">/ {pad(total)}</span>
+                    </div>
+
+                    <div className="dish-progress" aria-hidden="true">
+                        <span ref={barRef} />
+                    </div>
+
+                    <div className="dish-nav font-anton">
+                        <button ref={prevRef} type="button" className="dish-btn" onClick={() => api.current.go(-1)}>
+                            Prev
+                        </button>
+                        <button ref={nextRef} type="button" className="dish-btn" onClick={() => api.current.go(1)}>
+                            Next
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
     );
 }
