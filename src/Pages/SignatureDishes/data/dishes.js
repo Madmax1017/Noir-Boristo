@@ -52,7 +52,7 @@ const dishes = [
         category: "VEG",
         image: "/images/dishes/FOOD-6---(-CHESSE-CORN-BALLS-).jpg",
         type: "starter",
-        scale: 1.45,
+        scale: 1.82,
     },
     {
         id: 7,
@@ -62,6 +62,7 @@ const dishes = [
         category: "VEG",
         image: "/images/dishes/VEG SANDWICH  -CONTINENTAL-MENU-2.jpg",
         type: "sandwich",
+        scale: 1.82,
     },
     {
         id: 8,
