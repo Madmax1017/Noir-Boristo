@@ -7,8 +7,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(useGSAP, SplitText, ScrollTrigger);
 
 /**
- * Section title for Signature Dishes.
- * `count` is passed from the dishes array so the headline never goes stale.
+- Section title for Signature Dishes.
+- `count` is passed from the dishes array so the headline never goes stale.
  */
 export default function DishTitle({ count = 8 }) {
     const container = useRef(null);
@@ -25,7 +25,6 @@ export default function DishTitle({ count = 8 }) {
                 gsap.set([firstSplit.chars, secondSplit.chars], { yPercent: 120, rotate: 4 });
                 gsap.set(q(".flavor-text-scroll"), { clipPath: "inset(0% 100% 0% 0%)" });
                 gsap.set(q(".title-scribble path"), { strokeDashoffset: 1 });
-                gsap.set(q(".title-star"), { scale: 0, rotate: -90 });
                 gsap.set(q(".title-meta > *"), { yPercent: 110 });
 
                 const tl = gsap.timeline({
@@ -43,7 +42,6 @@ export default function DishTitle({ count = 8 }) {
                     duration: 0.8,
                     ease: "power4.out",
                 })
-                    .to(q(".title-star"), { scale: 1, rotate: 0, duration: 0.8, ease: "power3.out" }, "<0.2")
                     .to(
                         q(".flavor-text-scroll"),
                         { clipPath: "inset(0% 0% 0% 0%)", duration: 0.8, ease: "power4.inOut" },
@@ -82,25 +80,13 @@ export default function DishTitle({ count = 8 }) {
             className="flavor-section relative flex min-h-[60vh] w-full items-center overflow-hidden bg-noir-red px-4 pb-10 pt-16 text-noir-black sm:px-8 md:px-12 lg:px-16"
         >
             <div className="general-title flex w-full flex-col items-start justify-center gap-3 sm:gap-5 lg:gap-6">
-                {/* Line 1 + spinning vector mark */}
+                {/* Line 1 */}
                 <div className="flex items-center gap-4 sm:gap-8">
                     <div className="first-text-split overflow-hidden py-1">
                         <h2 className="font-anton text-[clamp(3.5rem,10vw,9rem)] uppercase leading-[0.9] tracking-[-0.045em]">
                             We have
                         </h2>
                     </div>
-                    <span className="title-star inline-flex" aria-hidden="true">
-                        <svg
-                            viewBox="0 0 100 100"
-                            className="h-[clamp(2.5rem,7vw,6rem)] w-auto motion-safe:animate-[spin_24s_linear_infinite]"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="6"
-                            strokeLinecap="round"
-                        >
-                            <path d="M50 4V96M4 50H96M17.5 17.5L82.5 82.5M82.5 17.5L17.5 82.5" />
-                        </svg>
-                    </span>
                 </div>
 
                 {/* Highlighted word */}

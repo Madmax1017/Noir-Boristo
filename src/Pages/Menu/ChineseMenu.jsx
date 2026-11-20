@@ -110,7 +110,7 @@ const chineseMenuData = {
     ],
 };
 
-const PLACEHOLDER = "/images/ambience/placeholder-dish.jpg";
+const PLACEHOLDER = "/images/dishes/FOOD-8---(-CHICKEN-TRIPPLE-FRIED-RICE).jpg";
 
 const prefersReducedMotion = () =>
     typeof window !== "undefined" &&

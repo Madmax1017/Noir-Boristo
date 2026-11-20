@@ -125,13 +125,14 @@ export default function SignatureDishes() {
                         if (revealed[i] || !entered) return;
                         revealed[i] = true;
                         const delay = Math.abs(i - Math.max(current, 0)) * 0.12;
+                        const baseScale = dishes[i]?.scale || 1.04;
                         gsap.to(frames[i], {
                             clipPath: "circle(50% at 50% 50%)",
                             duration: 1.1,
                             ease: "power4.inOut",
                             delay,
                         });
-                        gsap.to(imgs[i], { scale: 1.04, duration: 1.6, ease: "power3.out", delay });
+                        gsap.to(imgs[i], { scale: baseScale, duration: 1.6, ease: "power3.out", delay });
                         const [cat, nameEl, mar] = textKids[i];
                         gsap
                             .timeline({
@@ -304,7 +305,7 @@ export default function SignatureDishes() {
 
                     if (motion) {
                         gsap.set(frames, { clipPath: "circle(0% at 50% 50%)" });
-                        gsap.set(imgs, { scale: 1.15 });
+                        gsap.set(imgs, (i) => ({ scale: (dishes[i]?.scale || 1.04) * 1.1 }));
 
                         // text: category wipes in, name rises char by char, Marathi line fades up
                         textKids.forEach(([cat, nameEl, mar], i) => {

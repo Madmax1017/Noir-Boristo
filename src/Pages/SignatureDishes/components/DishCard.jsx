@@ -18,7 +18,7 @@ const VARIANT = "circle";
  *   .dish-text > * -> GSAP text reveals (see SignatureDishes) + scroll parallax (x), at different speeds
  */
 function DishCard({ dish, index, total, priority = false }) {
-    const { name, displayName, marathiName, category, image, type } = dish;
+    const { name, displayName, marathiName, category, image, type, scale } = dish;
     const root = useRef(null);
 
     const flip = index % 2 === 1;
@@ -93,6 +93,7 @@ function DishCard({ dish, index, total, priority = false }) {
                             className="dish-img"
                             src={image}
                             alt={name}
+                            style={scale ? { "--dish-scale": scale } : undefined}
                             loading={priority ? "eager" : "lazy"}
                             fetchPriority={priority ? "high" : "auto"}
                             decoding="async"

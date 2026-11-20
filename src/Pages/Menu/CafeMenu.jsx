@@ -111,7 +111,7 @@ const SIZES = [
     { key: "l", short: "L", label: "Large" },
 ];
 
-const PLACEHOLDER = "/images/ambience/placeholder-dish.jpg";
+const PLACEHOLDER = "/images/dishes/NOIR-SIGNATURE CONTINENTAL-MENU-1.jpg";
 
 const prefersReducedMotion = () =>
     typeof window !== "undefined" &&
@@ -375,8 +375,8 @@ const FramedImage = ({
         <figure
             data-circle
             className={`relative shrink-0 overflow-hidden border-[3px] border-noir-black bg-noir-black/10 ${isArch
-                    ? "aspect-[3/4] rounded-t-full rounded-b-[2rem]"
-                    : "aspect-square rounded-full"
+                ? "aspect-[3/4] rounded-t-full rounded-b-[2rem]"
+                : "aspect-square rounded-full"
                 } ${className}`}
         >
             {failed ? (
@@ -853,8 +853,8 @@ export default function CafeMenu({ topOffset = 0 }) {
             ref={rootRef}
             className="overflow-x-clip bg-noir-red text-noir-black"
         >
-        {/* Hero */}
-        <header className="mx-auto max-w-7xl px-5 pb-12 pt-20 sm:px-10 sm:pb-16 sm:pt-28">
+            {/* Hero */}
+            <header className="mx-auto max-w-7xl px-5 pb-12 pt-20 sm:px-10 sm:pb-16 sm:pt-28">
                 <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-8">
                     <div className="lg:col-span-8">
                         <h1 className="font-anton text-[clamp(3.5rem,11vw,10rem)] uppercase leading-[0.82]">
@@ -930,8 +930,8 @@ export default function CafeMenu({ topOffset = 0 }) {
                             onClick={() => goToSection(s.id)}
                             aria-current={active === s.id ? "true" : undefined}
                             className={`relative z-10 shrink-0 rounded-full px-5 py-2 font-anton text-lg uppercase tracking-wide transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-noir-black sm:text-xl ${active === s.id
-                                    ? "text-noir-red"
-                                    : "text-noir-black hover:bg-noir-black/10"
+                                ? "text-noir-red"
+                                : "text-noir-black hover:bg-noir-black/10"
                                 }`}
                         >
                             {s.tab}
