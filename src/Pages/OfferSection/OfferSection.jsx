@@ -10,15 +10,6 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const OFFERS = [
     {
-        id: "chinese",
-        title: "TUESDAY OFFER!",
-        subtitle: "12AM TO 6PM",
-        highlight: "20% OFF",
-        description: "ANY CHINESE FOOD",
-        imageSrc: "/images/1.jpg",
-        badgeText: "Tuesday",
-    },
-    {
         id: "pizza",
         title: "TUESDAY OFFER!",
         subtitle: "12AM TO 6PM",

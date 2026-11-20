@@ -126,12 +126,12 @@ export default function SignatureDishes() {
                         revealed[i] = true;
                         const delay = Math.abs(i - Math.max(current, 0)) * 0.12;
                         gsap.to(frames[i], {
-                            clipPath: "inset(0% 0% 0% 0%)",
+                            clipPath: "circle(50% at 50% 50%)",
                             duration: 1.1,
                             ease: "power4.inOut",
                             delay,
                         });
-                        gsap.to(imgs[i], { scale: 1.25, duration: 1.6, ease: "power3.out", delay });
+                        gsap.to(imgs[i], { scale: 1.04, duration: 1.6, ease: "power3.out", delay });
                         const [cat, nameEl, mar] = textKids[i];
                         gsap
                             .timeline({
@@ -196,7 +196,7 @@ export default function SignatureDishes() {
                                 rotate: side * 2,
                             });
                             // image slides inside its frame, opposite to the swipe
-                            gsap.set(imgs[i], { xPercent: clamp(-1.2, 1.2, d) * -7 });
+                            gsap.set(imgs[i], { xPercent: clamp(-1.2, 1.2, d) * -3.5 });
                             // text block fades; each line trails at its own speed
                             gsap.set(texts[i], { opacity: 1 - 0.9 * k });
                             gsap.set(textKids[i][0], { x: dd * -24 });
@@ -303,8 +303,8 @@ export default function SignatureDishes() {
                     gsap.set(barEl, { scaleX: 1 / n });
 
                     if (motion) {
-                        gsap.set(frames, { clipPath: "inset(0% 0% 100% 0%)" });
-                        gsap.set(imgs, { scale: 1.5 });
+                        gsap.set(frames, { clipPath: "circle(0% at 50% 50%)" });
+                        gsap.set(imgs, { scale: 1.15 });
 
                         // text: category wipes in, name rises char by char, Marathi line fades up
                         textKids.forEach(([cat, nameEl, mar], i) => {

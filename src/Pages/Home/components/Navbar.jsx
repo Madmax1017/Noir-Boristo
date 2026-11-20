@@ -58,6 +58,7 @@ export default function Navbar() {
     const closeMenu = () => {
         setIsOpen(false);
         setActiveLink(null);
+        document.body.style.overflow = "";
     };
 
     const handleNavigation = (href) => {

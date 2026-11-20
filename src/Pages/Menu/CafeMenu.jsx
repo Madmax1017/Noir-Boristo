@@ -651,8 +651,20 @@ export default function CafeMenu({ topOffset = 0 }) {
                         : [];
 
                     gsap.set(strokes, {
-                        strokeDasharray: (i, el) => el.getTotalLength(),
-                        strokeDashoffset: (i, el) => el.getTotalLength(),
+                        strokeDasharray: (i, el) => {
+                            try {
+                                return typeof el.getTotalLength === "function" ? el.getTotalLength() : 100;
+                            } catch (_) {
+                                return 100;
+                            }
+                        },
+                        strokeDashoffset: (i, el) => {
+                            try {
+                                return typeof el.getTotalLength === "function" ? el.getTotalLength() : 100;
+                            } catch (_) {
+                                return 100;
+                            }
+                        },
                     });
 
                     gsap

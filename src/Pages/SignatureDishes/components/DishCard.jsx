@@ -4,8 +4,8 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(useGSAP);
 
-// Three image framings, cycled by index, so the row never reads as a uniform grid.
-const VARIANTS = ["arch", "circle", "slab"];
+// All dishes use a circular frame so circular plates and bowls are never clipped/tripped.
+const VARIANT = "circle";
 
 /**
  * One dish in the showcase.
@@ -13,7 +13,7 @@ const VARIANTS = ["arch", "circle", "slab"];
  * Transform layers (separate so GSAP tweens never fight each other):
  *   .dish-media  -> scale / opacity / rotate, driven by SignatureDishes on scroll
  *   .dish-hover  -> hover scale + tilt, driven here
- *   .dish-frame  -> clip-path reveal + shape mask
+ *   .dish-frame  -> clip-path reveal + circle shape mask
  *   .dish-img    -> scroll parallax (xPercent) + pointer drift (x / y)
  *   .dish-text > * -> GSAP text reveals (see SignatureDishes) + scroll parallax (x), at different speeds
  */
@@ -21,7 +21,6 @@ function DishCard({ dish, index, total, priority = false }) {
     const { name, displayName, marathiName, category, image, type } = dish;
     const root = useRef(null);
 
-    const variant = VARIANTS[index % VARIANTS.length];
     const flip = index % 2 === 1;
 
     /* Desktop-only hover: slight scale, soft tilt, image drift. */
@@ -43,16 +42,16 @@ function DishCard({ dish, index, total, priority = false }) {
                     const ix = gsap.quickTo(img, "x", { duration: 0.8, ease: "power3.out" });
                     const iy = gsap.quickTo(img, "y", { duration: 0.8, ease: "power3.out" });
 
-                    const onEnter = () => gsap.to(el, { scale: 1.04, duration: 0.6, ease: "power3.out" });
+                    const onEnter = () => gsap.to(el, { scale: 1.03, duration: 0.6, ease: "power3.out" });
 
                     const onMove = (e) => {
                         const r = el.getBoundingClientRect();
                         const nx = (e.clientX - r.left) / r.width - 0.5;
                         const ny = (e.clientY - r.top) / r.height - 0.5;
-                        ry(nx * 7);
-                        rx(-ny * 7);
-                        ix(nx * -16);
-                        iy(ny * -16);
+                        ry(nx * 5);
+                        rx(-ny * 5);
+                        ix(nx * -8);
+                        iy(ny * -8);
                     };
 
                     const onLeave = () => {
@@ -83,7 +82,7 @@ function DishCard({ dish, index, total, priority = false }) {
     return (
         <article
             ref={root}
-            className={`dish-card dish-card--${variant}${flip ? " dish-card--flip" : ""}`}
+            className={`dish-card dish-card--${VARIANT}${flip ? " dish-card--flip" : ""}`}
             data-type={type}
             aria-label={`${displayName}, ${index + 1} of ${total}`}
         >

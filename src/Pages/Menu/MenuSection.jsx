@@ -56,6 +56,7 @@ export default function MenuSection({ topOffset = 0 }) {
         () => {
             if (firstRunRef.current) {
                 firstRunRef.current = false;
+                gsap.set(panelRef.current, { opacity: 1, x: 0 });
                 return;
             }
 
@@ -64,18 +65,19 @@ export default function MenuSection({ topOffset = 0 }) {
 
             if (prefersReducedMotion()) {
                 busyRef.current = false;
+                gsap.set(panelRef.current, { opacity: 1, x: 0 });
                 return;
             }
 
             gsap.fromTo(
                 panelRef.current,
-                { opacity: 0, x: dirRef.current * 60 },
+                { opacity: 0, x: dirRef.current * 40 },
                 {
                     opacity: 1,
                     x: 0,
-                    duration: 0.7,
-                    ease: "power3.out",
-                    clearProps: "opacity,transform",
+                    duration: 0.4,
+                    ease: "power2.out",
+                    clearProps: "all",
                     onComplete: () => {
                         busyRef.current = false;
                     },
@@ -87,7 +89,7 @@ export default function MenuSection({ topOffset = 0 }) {
 
     /* ── Exit animation, then swap the menu ── */
     const switchTo = contextSafe((id) => {
-        if (id === activeTabRef.current || busyRef.current) return;
+        if (id === activeTabRef.current) return;
 
         const ids = TABS.map((t) => t.id);
         const dir = ids.indexOf(id) > ids.indexOf(activeTabRef.current) ? 1 : -1;
@@ -97,11 +99,11 @@ export default function MenuSection({ topOffset = 0 }) {
         const swap = () => {
             // If the reader is deep in the old menu, start the new one at its top
             const sectionTop =
-                sectionRef.current.getBoundingClientRect().top +
+                sectionRef.current?.getBoundingClientRect().top +
                 window.scrollY -
                 topOffset;
-            if (window.scrollY > sectionTop) {
-                window.scrollTo({ top: sectionTop, behavior: "instant" });
+            if (window.scrollY > (sectionTop || 0)) {
+                window.scrollTo({ top: sectionTop || 0, behavior: "instant" });
             }
             setActiveTab(id);
         };
@@ -111,9 +113,17 @@ export default function MenuSection({ topOffset = 0 }) {
         // Slide the red block to the chosen tab
         gsap.to(indicatorRef.current, {
             xPercent: ids.indexOf(id) * 100,
-            duration: reduce ? 0 : 0.5,
+            duration: reduce ? 0 : 0.4,
             ease: "power3.out",
         });
+
+        // Safety fallback so panel is never left blank
+        setTimeout(() => {
+            busyRef.current = false;
+            if (panelRef.current) {
+                gsap.set(panelRef.current, { opacity: 1, x: 0 });
+            }
+        }, 500);
 
         if (reduce) {
             swap();
@@ -122,8 +132,7 @@ export default function MenuSection({ topOffset = 0 }) {
 
         gsap.to(panelRef.current, {
             opacity: 0,
-            x: -dir * 40,
-            duration: 0.3,
+            duration: 0.2,
             ease: "power2.in",
             onComplete: swap,
         });
@@ -154,7 +163,7 @@ export default function MenuSection({ topOffset = 0 }) {
             id="full-menu"
             ref={sectionRef}
             aria-label="Noir Bistro menus"
-            className="bg-noir-black text-noir-red"
+            className="min-h-screen bg-noir-black text-noir-red pt-24 sm:pt-28 lg:pt-32"
         >
             {/* Sticky toggle bar */}
             <div

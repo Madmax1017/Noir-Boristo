@@ -15,13 +15,13 @@ const ADDRESS_LINES = [
 ];
 
 const HOURS = [
-  { day: "Monday to Friday", time: "9:00 AM to 10:00 PM" },
-  { day: "Saturday", time: "9:00 AM to 12:00 PM" },
-  { day: "Sunday", time: "9:00 AM to 11:00 PM" },
+  { day: "Monday to Friday", time: "11:00 Am to 11:30 Pm" },
+  { day: "Saturday", time: "11:00 Am to 11:30 Pm" },
+  { day: "Sunday", time: "11:00 Am to 11:30 Pm" },
 ];
 
-const PHONE = "+91 000 000 0000";
-const EMAIL = "hello@noirbistro.com";
+const PHONE = "+91 84598 36120";
+const EMAIL = "noirbistro.alibag@gmail.com";
 const MAPS_URL = "https://maps.app.goo.gl/ZH3vTzpijBm6sryU6";
 
 /* -------------------------------------------------------------------------- */
@@ -192,7 +192,7 @@ function MapCard({ mapEmbedSrc }) {
 /* -------------------------------------------------------------------------- */
 
 export default function LocationSection({
-  imageSrc = "/images/noir-hero.jpg",
+  imageSrc = "/images/location.jpg",
   imageAlt = "Interior of Noir Bistro in Alibag",
   mapEmbedSrc = "",
 }) {

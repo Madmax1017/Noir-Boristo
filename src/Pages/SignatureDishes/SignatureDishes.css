@@ -9,7 +9,7 @@
     /* mobile defaults */
     --card-w: 82vw;
     --card-gap: 6vw;
-    --frame: min(72vw, 58svh);
+    --frame: min(72vw, 48svh);
 
     background: var(--sd-red);
     color: var(--sd-black);
@@ -21,7 +21,7 @@
     .signature-dishes {
         --card-w: 64vw;
         --card-gap: 5vw;
-        --frame: min(46vw, 56svh);
+        --frame: min(44vw, 50svh);
     }
 }
 
@@ -29,7 +29,7 @@
     .signature-dishes {
         --card-w: clamp(640px, 62vw, 1000px);
         --card-gap: clamp(32px, 4vw, 72px);
-        --frame: min(30vw, 62svh);
+        --frame: min(28vw, 52svh);
     }
 }
 
@@ -112,17 +112,21 @@
 
 .dish-hover {
     position: relative;
-    width: var(--w);
-    height: var(--h);
+    width: var(--w, var(--frame));
+    height: var(--h, var(--frame));
     will-change: transform;
 }
 
 .dish-frame {
     width: 100%;
     height: 100%;
+    border-radius: 50%;
     overflow: hidden;
-    background: var(--sd-black);
-    /* placeholder while the photo loads */
+    position: relative;
+    clip-path: circle(50% at 50% 50%);
+    -webkit-clip-path: circle(50% at 50% 50%);
+    background: transparent;
+    /* circular aperture framing so food plates are never clipped */
 }
 
 .dish-img {
@@ -130,38 +134,22 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transform: scale(1.25);
-    /* overscan so the parallax never shows an edge */
+    object-position: center center;
+    transform: scale(1.04);
+    /* subtle overscan so the parallax never shows an edge */
     -webkit-user-drag: none;
     will-change: transform;
 }
 
-/* three asymmetric framings */
-.dish-card--arch {
-    --w: calc(var(--frame) * 0.82);
+/* circular framing for all dishes */
+.dish-card--circle,
+.dish-card {
+    --w: var(--frame);
     --h: var(--frame);
-}
-
-.dish-card--circle {
-    --w: calc(var(--frame) * 0.94);
-    --h: calc(var(--frame) * 0.94);
-}
-
-.dish-card--slab {
-    --w: calc(var(--frame) * 1.08);
-    --h: calc(var(--frame) * 0.86);
-}
-
-.dish-card--arch .dish-frame {
-    border-radius: 999px 999px 0 0;
 }
 
 .dish-card--circle .dish-frame {
     border-radius: 50%;
-}
-
-.dish-card--slab .dish-frame {
-    border-radius: 0;
 }
 
 /* ---------- text ---------- */
@@ -230,12 +218,13 @@
     line-height: 1.25;
 }
 
-/* desktop: side-by-side, alternating sides, offset verticals */
+/* desktop: side-by-side, alternating sides, vertically centered */
 @media (min-width: 1024px) {
     .dish-card {
         flex-direction: row;
         justify-content: space-between;
-        gap: clamp(1rem, 2.5vw, 2.5rem);
+        align-items: center;
+        gap: clamp(1.5rem, 3vw, 3rem);
     }
 
     .dish-card--flip {
@@ -261,14 +250,6 @@
 
     .dish-marathi {
         font-size: clamp(1.1rem, 1.7vw, 1.5rem);
-    }
-
-    .dish-card--arch .dish-media {
-        margin-top: -4vh;
-    }
-
-    .dish-card--slab .dish-media {
-        margin-top: 5vh;
     }
 }
 

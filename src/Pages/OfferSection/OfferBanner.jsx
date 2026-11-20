@@ -1,4 +1,5 @@
 import { useId, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -42,7 +43,7 @@ export default function OfferBanner({
     index,
     total,
     reverse = false,
-    ctaHref = "#full-menu",
+    ctaHref = "/full-menu",
     ctaLabel = "View menu",
 }) {
     const cardRef = useRef(null);
@@ -199,12 +200,21 @@ export default function OfferBanner({
                         {subtitle}
                     </p>
 
-                    <a data-offer-fade href={ctaHref} className="offer-cta offer-detail">
-                        {ctaLabel}
-                        <span aria-hidden="true" className="offer-cta__arrow">
-                            &#8599;
-                        </span>
-                    </a>
+                    {ctaHref.startsWith("/") ? (
+                        <Link data-offer-fade to={ctaHref} className="offer-cta offer-detail">
+                            {ctaLabel}
+                            <span aria-hidden="true" className="offer-cta__arrow">
+                                &#8599;
+                            </span>
+                        </Link>
+                    ) : (
+                        <a data-offer-fade href={ctaHref} className="offer-cta offer-detail">
+                            {ctaLabel}
+                            <span aria-hidden="true" className="offer-cta__arrow">
+                                &#8599;
+                            </span>
+                        </a>
+                    )}
                 </div>
 
                 {index !== undefined && (

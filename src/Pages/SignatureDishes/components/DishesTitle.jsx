@@ -86,7 +86,7 @@ export default function DishTitle({ count = 8 }) {
                 <div className="flex items-center gap-4 sm:gap-8">
                     <div className="first-text-split overflow-hidden py-1">
                         <h2 className="font-anton text-[clamp(3.5rem,10vw,9rem)] uppercase leading-[0.9] tracking-[-0.045em]">
-                            We have {count}
+                            We have
                         </h2>
                     </div>
                     <span className="title-star inline-flex" aria-hidden="true">

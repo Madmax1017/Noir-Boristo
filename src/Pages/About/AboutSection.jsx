@@ -95,7 +95,7 @@ export default function AboutSection() {
         <div className="about-image-panel">
           <img
             ref={imageRef}
-            src="/images/ambience/_DSC9886.jpg"
+            src="\images\OUR-STORY.jpg"
             alt="The atmosphere inside Noir Bistro"
             loading="lazy"
           />
